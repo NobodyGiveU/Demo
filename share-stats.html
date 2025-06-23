@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebTimeWise - Share Your Stats</title>
+    <link rel="stylesheet" href="popup.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <script src="lib/chart.min.js"></script>
+    <script src="demo-data.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        :root {
+            --bg-primary: #0f0f23;
+            --bg-secondary: #1a1a2e;
+            --bg-tertiary: #16213e;
+            --card-bg: #1e1e3f;
+            --card-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b8;
+            --text-color: #ffffff;
+            --accent-color: #4a90e2;
+            --accent-green: #4caf50;
+            --accent-orange: #ff9800;
+            --accent-purple: #9c27b0;
+            --border-color: rgba(255, 255, 255, 0.15);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body, html {
+            height: 100%;
+            margin: 0;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-tertiary) 100%);
+            color: var(--text-primary);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            width: 100vw !important;
+            max-width: none !important;
+        }
+
+        .container {
+            max-width: 1200px !important;
+            margin: 0 auto !important;
+            padding: 32px 24px !important;
+            width: 100% !important;
+        }
+
+        .demo-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 193, 7, 0.9);
+            color: #333;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-primary);
+            padding: 12px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            z-index: 1001;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .share-header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding: 20px 0;
+        }
+
+        .share-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0 0 12px 0;
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .share-header p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .summary-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin: 24px 0;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-emoji {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .charts-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin: 32px 0;
+        }
+
+        .chart-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+        }
+
+        .chart-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        .chart-container {
+            height: 300px;
+        }
+
+        .summary-text {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 24px 0;
+            border-left: 4px solid var(--accent-color);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .motivational-message {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 24px 0;
+            color: var(--accent-green);
+        }
+
+        .share-actions {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 32px;
+            flex-wrap: wrap;
+        }
+
+        .share-btn {
+            background: var(--accent-color);
+            border: none;
+            color: var(--text-primary);
+            padding: 16px 32px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .share-btn:hover {
+            background: #3a7bc8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+        }
+
+        .share-btn.secondary {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+        }
+
+        .share-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-btn">← Back</a>
+    <div class="demo-indicator">📤 Demo</div>
+
+    <div class="container">
+        <div class="share-header">
+            <h1>Your Weekly Public Summary</h1>
+            <p>Your weekly productivity insights at a glance</p>
+        </div>
+
+        <div class="summary-card">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-emoji">⏱️</div>
+                    <div class="stat-label">Total Screen Time</div>
+                    <div class="stat-value">37h 57m</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-emoji">🎯</div>
+                    <div class="stat-label">Productivity Score</div>
+                    <div class="stat-value">1%</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-emoji">🌐</div>
+                    <div class="stat-label">Top Websites</div>
+                    <div class="stat-value">youtube.com, chess.com</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="charts-section">
+            <div class="chart-card">
+                <h3>Daily Screen Time</h3>
+                <div class="chart-container">
+                    <canvas id="dailyChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <h3>Category Breakdown</h3>
+                <div class="chart-container">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <h3>Weekly Summary</h3>
+            <div class="summary-text">
+                This week, you spent 37h 57m online. You were 1% productive. You spent 14h 44m in Entertainment, 3h 45m in Social Media, and 0h 27m in Productivity. Your top website(s) were youtube.com and chess.com.
+            </div>
+            
+            <div class="motivational-message">
+                ⏳ Keep Pushing!
+            </div>
+        </div>
+
+        <div class="share-actions">
+            <button class="share-btn" onclick="shareWeek()">
+                📤 Share My Week
+            </button>
+            <button class="share-btn secondary" onclick="copyPublicLink()">
+                🔗 Copy Public Link
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize daily chart
+            const dailyCtx = document.getElementById('dailyChart').getContext('2d');
+            new Chart(dailyCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Screen Time (hours)',
+                        data: [6.2, 5.8, 7.1, 4.9, 6.5, 3.8, 3.6],
+                        backgroundColor: [
+                            '#4a90e2',
+                            '#4a90e2',
+                            '#4a90e2',
+                            '#4a90e2',
+                            '#4a90e2',
+                            '#ff9800',
+                            '#ff9800'
+                        ],
+                        borderColor: 'rgba(255, 255, 255, 0.1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            ticks: { color: '#ffffff' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        },
+                        y: {
+                            ticks: { 
+                                color: '#ffffff',
+                                callback: function(value) {
+                                    return value + 'h';
+                                }
+                            },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.parsed.y}h ${Math.round((context.parsed.y % 1) * 60)}m`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Initialize category pie chart
+            const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+            new Chart(categoryCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Entertainment', 'Social Media', 'Productivity', 'Shopping', 'News'],
+                    datasets: [{
+                        data: [39, 10, 1, 8, 12],
+                        backgroundColor: [
+                            '#ff9800',
+                            '#2196f3',
+                            '#4caf50',
+                            '#9c27b0',
+                            '#ff5722'
+                        ],
+                        borderColor: 'rgba(255, 255, 255, 0.1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'right',
+                            labels: {
+                                color: '#ffffff',
+                                boxWidth: 12,
+                                padding: 15,
+                                font: {
+                                    size: 11
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    return `${label}: ${value}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        function shareWeek() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'My Weekly Screen Time Summary',
+                    text: 'Check out my weekly productivity insights from WebTimeWise! This week I spent 37h 57m online with a 1% productivity score.',
+                    url: window.location.href
+                });
+            } else {
+                // Fallback for browsers that don't support Web Share API
+                const text = 'Check out my weekly productivity insights from WebTimeWise! This week I spent 37h 57m online with a 1% productivity score. ' + window.location.href;
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('Share text copied to clipboard!');
+                });
+            }
+        }
+
+        function copyPublicLink() {
+            const publicLink = `${window.location.origin}/demo/share-stats.html?user=demo&week=${new Date().getWeek()}`;
+            navigator.clipboard.writeText(publicLink).then(() => {
+                alert('Public link copied to clipboard!');
+            }).catch(() => {
+                alert('Could not copy link. Please copy manually: ' + publicLink);
+            });
+        }
+
+        // Helper function to get week number
+        Date.prototype.getWeek = function() {
+            const date = new Date(this.getTime());
+            date.setHours(0, 0, 0, 0);
+            date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+            const week1 = new Date(date.getFullYear(), 0, 4);
+            return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+        };
+    </script>
+</body>
+</html> 

@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebTimeWise - Demo Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #667eea 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            text-align: center;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #fff, #f0f0f0, #fff);
+            background-size: 200% 200%;
+            animation: shimmer 3s ease-in-out infinite;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            letter-spacing: -2px;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .header p {
+            font-size: 1.4rem;
+            opacity: 0.95;
+            margin-bottom: 20px;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+
+        .demo-banner {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24, #ff6b6b);
+            background-size: 200% 200%;
+            animation: gradientPulse 4s ease infinite;
+            color: white;
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            font-weight: 600;
+            box-shadow: 0 8px 32px rgba(255, 107, 107, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        @keyframes gradientPulse {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .device-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        .device-card {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 35px 25px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-decoration: none;
+            color: white;
+            display: block;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .device-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.6s;
+        }
+
+        .device-card:hover::before {
+            left: 100%;
+        }
+
+        .device-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .device-card:active {
+            transform: translateY(-4px) scale(1.01);
+        }
+
+        .device-icon {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            display: block;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .device-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .device-card p {
+            opacity: 0.85;
+            font-size: 1rem;
+            line-height: 1.5;
+            font-weight: 400;
+        }
+
+        .features {
+            margin-top: 50px;
+        }
+
+        .features h2 {
+            margin-bottom: 30px;
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .feature-item {
+            background: rgba(255, 255, 255, 0.12);
+            padding: 25px 20px;
+            border-radius: 16px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-item:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-item strong {
+            color: #4caf50;
+            font-weight: 600;
+        }
+
+        .bolt-badge {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 12px 18px;
+            border-radius: 25px;
+            z-index: 1000;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .bolt-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .bolt-badge a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .demo-indicator {
+            position: fixed;
+            top: 25px;
+            left: 25px;
+            background: linear-gradient(135deg, #ffc107, #ff9800);
+            color: #333;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3); }
+            50% { box-shadow: 0 4px 20px rgba(255, 193, 7, 0.5); }
+        }
+
+        /* Demo Popup Modal */
+        .demo-popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(15px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .demo-popup-modal {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 550px;
+            width: 90%;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            position: relative;
+            animation: slideIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            color: white;
+        }
+
+        .demo-popup-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .demo-popup-body {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.7;
+            margin-bottom: 30px;
+            font-size: 1rem;
+            font-weight: 400;
+        }
+
+        .demo-popup-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .github-btn {
+            background: linear-gradient(135deg, #24292e, #1a1e22);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .github-btn:hover {
+            background: linear-gradient(135deg, #1a1e22, #0d1117);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(36, 41, 46, 0.4);
+        }
+
+        .demo-video-btn {
+            background: linear-gradient(135deg, #ff4757, #ff3742);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .demo-video-btn:hover {
+            background: linear-gradient(135deg, #ff3742, #ff2f3a);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 71, 87, 0.4);
+        }
+
+        .demo-continue-btn {
+            background: linear-gradient(135deg, #4caf50, #45a049);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .demo-continue-btn:hover {
+            background: linear-gradient(135deg, #45a049, #388e3c);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { 
+                opacity: 0;
+                transform: translateY(-40px) scale(0.9);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .demo-popup-overlay.hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .device-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .demo-popup-buttons {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .demo-popup-modal {
+                margin: 20px;
+                padding: 30px;
+            }
+
+            .device-card {
+                padding: 30px 20px;
+            }
+
+            .feature-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .demo-popup-modal {
+                padding: 25px;
+            }
+
+            .demo-popup-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Demo Popup Modal -->
+    <div id="demoPopupOverlay" class="demo-popup-overlay hidden">
+        <div class="demo-popup-modal">
+            <div class="demo-popup-title">
+                🚧 Demo Dashboard Only
+            </div>
+            <div class="demo-popup-body">
+                🚀 <strong>Welcome to WebTimeWise (Demo Mode)</strong><br><br>
+                You're currently viewing a frontend-only demo of the WebTimeWise Dashboard.
+                This version is not connected to the live backend, mobile tracking app, or AI-powered analytics.<br><br>
+                To run the full project (including Chrome Extension + Mobile App), please visit the GitHub repository for setup instructions.
+            </div>
+            <div class="demo-popup-buttons">
+                <a href="https://github.com/your-username/webtimewise" target="_blank" class="github-btn">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+                    </svg>
+                    Go to GitHub
+                </a>
+                <a href="https://www.youtube.com/watch?v=demo-video-id" target="_blank" class="demo-video-btn">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8.051 1.999h.089c.822.003 4.987.033 6.11.335a2.01 2.01 0 0 1 1.415 1.42c.101.38.172.883.22 1.402l.01.104.022.26.008.104c.065.914.073 1.77.074 1.957v.075c-.001.194-.01 1.108-.082 2.06l-.008.105-.009.104c-.05.572-.124 1.14-.235 1.558a2.007 2.007 0 0 1-1.415 1.42c-1.16.312-5.569.334-6.18.335h-.142c-.309 0-1.587-.006-2.927-.052l-.17-.006-.087-.004-.171-.007-.171-.007c-1.11-.049-2.167-.128-2.654-.26a2.007 2.007 0 0 1-1.415-1.419c-.111-.417-.185-.986-.235-1.558L.09 9.82l-.008-.104A31.4 31.4 0 0 1 0 7.68v-.123c.002-.215.01-.958.064-1.778l.007-.103.003-.052.008-.104.022-.26.01-.104c.048-.519.119-1.023.22-1.402a2.007 2.007 0 0 1 1.415-1.42c.487-.13 1.544-.21 2.654-.26l.17-.007.172-.006.086-.003.171-.007A99.788 99.788 0 0 1 7.858 2h.193zM6.4 5.209v4.818l4.157-2.408L6.4 5.209z"/>
+                    </svg>
+                    Watch Demo Video
+                </a>
+                <button id="demoContinueBtn" class="demo-continue-btn">
+                    Continue to Demo
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="demo-indicator">🎮 Demo Mode</div>
+
+    <div class="container">
+        <div class="header">
+            <h1>🌐 WebTimeWise</h1>
+            <p>Your comprehensive digital wellness companion</p>
+        </div>
+
+        <div class="demo-banner">
+            🚀 <strong>Demo Mode</strong> - Experience WebTimeWise with realistic data across all devices
+        </div>
+
+        <h2 style="font-size: 2rem; margin-bottom: 15px; font-weight: 700;">📱 Select Device</h2>
+        <p style="margin-bottom: 30px; opacity: 0.9; font-size: 1.1rem;">Choose a device to view its screen time data</p>
+
+        <div class="device-grid">
+            <a href="overall-view.html" class="device-card">
+                <span class="device-icon">📊</span>
+                <h3>Overall View</h3>
+                <p>Combined view of all your devices with comprehensive analytics and insights</p>
+            </a>
+
+            <a href="browser-view.html" class="device-card">
+                <span class="device-icon">🌐</span>
+                <h3>Browser</h3>
+                <p>View your browser activity, website tracking, and Chrome extension data</p>
+            </a>
+
+            <a href="mobile-view.html" class="device-card">
+                <span class="device-icon">📱</span>
+                <h3>Mobile</h3>
+                <p>View your mobile app usage, screen time, and app-specific analytics</p>
+            </a>
+
+            <a href="laptop-view.html" class="device-card">
+                <span class="device-icon">💻</span>
+                <h3>Laptop</h3>
+                <p>View your laptop app usage, productivity tracking, and desktop analytics</p>
+            </a>
+
+            <a href="share-stats.html" class="device-card">
+                <span class="device-icon">📤</span>
+                <h3>Share Stats</h3>
+                <p>Create a public weekly summary to share your digital wellness progress</p>
+            </a>
+        </div>
+
+        <div class="features">
+            <h2>🌟 Key Features</h2>
+            <div class="feature-list">
+                <div class="feature-item">
+                    <strong>🔍 Real-time Tracking</strong><br>
+                    Monitor usage across all devices
+                </div>
+                <div class="feature-item">
+                    <strong>📊 Smart Analytics</strong><br>
+                    Detailed insights and patterns
+                </div>
+                <div class="feature-item">
+                    <strong>🎯 Goal Setting</strong><br>
+                    Set and track productivity goals
+                </div>
+                <div class="feature-item">
+                    <strong>🔒 Focus Mode</strong><br>
+                    Block distractions when needed
+                </div>
+                <div class="feature-item">
+                    <strong>🗣️ Voice AI Reviews</strong><br>
+                    Weekly voice summaries
+                </div>
+                <div class="feature-item">
+                    <strong>📱 Cross-Platform</strong><br>
+                    Chrome extension + Web + Mobile
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bolt-badge">
+        <a href="https://bolt.new" target="_blank">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="16" height="16">
+                <path d="M13 2L3 14h7l-1 8L21 10h-7l1-8z"/>
+            </svg>
+            Built with Bolt
+        </a>
+    </div>
+
+    <script>
+        // Store selected scenario in localStorage
+        function setScenario(scenario) {
+            localStorage.setItem('webtimewise_demoScenario', scenario);
+            
+            // Update active button
+            document.querySelectorAll('.scenario-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            if (event && event.target) {
+                event.target.classList.add('active');
+            }
+            
+            // Show notification
+            showNotification(`Scenario set to: ${getScenarioName(scenario)}`);
+        }
+
+        function getScenarioName(scenario) {
+            const names = {
+                'productive': '📚 Productive Day',
+                'social': '📱 Social Media Day',
+                'mixed': '🔄 Mixed Usage',
+                'gaming': '🎮 Gaming Day',
+                'work': '💼 Work Day'
+            };
+            return names[scenario] || scenario;
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 80px;
+                right: 20px;
+                background: linear-gradient(135deg, #4caf50, #45a049);
+                color: white;
+                padding: 15px 20px;
+                border-radius: 12px;
+                z-index: 10000;
+                box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+                animation: slideInNotification 0.4s ease;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                backdrop-filter: blur(10px);
+                font-weight: 500;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOutNotification 0.4s ease';
+                setTimeout(() => notification.remove(), 400);
+            }, 3000);
+        }
+
+        // Add CSS animations for notifications
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInNotification {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOutNotification {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if user has already seen the demo popup in this session
+            const hasSeenDemoPopup = sessionStorage.getItem('webtimewise_hasSeenDemoPopup');
+            const demoPopupOverlay = document.getElementById('demoPopupOverlay');
+            const demoContinueBtn = document.getElementById('demoContinueBtn');
+            
+            // Only show popup if user hasn't seen it in this session
+            if (!hasSeenDemoPopup && demoPopupOverlay) {
+                demoPopupOverlay.classList.remove('hidden');
+            }
+            
+            // Handle continue button click
+            if (demoContinueBtn && demoPopupOverlay) {
+                demoContinueBtn.addEventListener('click', () => {
+                    demoPopupOverlay.classList.add('hidden');
+                    // Mark that user has seen the popup in this session
+                    sessionStorage.setItem('webtimewise_hasSeenDemoPopup', 'true');
+                });
+            }
+            
+            // Close popup when clicking on overlay (outside modal)
+            if (demoPopupOverlay) {
+                demoPopupOverlay.addEventListener('click', (e) => {
+                    if (e.target === demoPopupOverlay) {
+                        demoPopupOverlay.classList.add('hidden');
+                        // Mark that user has seen the popup in this session
+                        sessionStorage.setItem('webtimewise_hasSeenDemoPopup', 'true');
+                    }
+                });
+            }
+            
+            // Initialize default scenario
+            const savedScenario = localStorage.getItem('webtimewise_demoScenario') || 'productive';
+            setScenario(savedScenario);
+
+            // Add entrance animation delay for device cards
+            const deviceCards = document.querySelectorAll('.device-card');
+            deviceCards.forEach((card, index) => {
+                card.style.animation = `fadeInUp 0.6s ease-out ${index * 0.1}s both`;
+            });
+
+            // Add entrance animation for feature items
+            const featureItems = document.querySelectorAll('.feature-item');
+            featureItems.forEach((item, index) => {
+                item.style.animation = `fadeInUp 0.6s ease-out ${0.5 + index * 0.1}s both`;
+            });
+        });
+
+        // Add keyboard support for accessibility
+        document.addEventListener('keydown', (e) => {
+            const demoPopupOverlay = document.getElementById('demoPopupOverlay');
+            if (e.key === 'Escape' && demoPopupOverlay && !demoPopupOverlay.classList.contains('hidden')) {
+                demoPopupOverlay.classList.add('hidden');
+                sessionStorage.setItem('webtimewise_hasSeenDemoPopup', 'true');
+            }
+        });
+    </script>
+</body>
+</html> 
