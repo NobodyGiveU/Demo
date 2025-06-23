@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebTimeWise - Demo Dashboard</title>
+    <title>WebTimeWise - Digital Wellness Dashboard</title>
     <style>
         * {
             margin: 0;
@@ -457,10 +457,10 @@
                 🚧 Demo Dashboard Only
             </div>
             <div class="demo-popup-body">
-                🚀 <strong>Welcome to WebTimeWise (Demo Mode)</strong><br><br>
-                You're currently viewing a frontend-only demo of the WebTimeWise Dashboard.
-                This version is not connected to the live backend, mobile tracking app, or AI-powered analytics.<br><br>
-                To run the full project (including Chrome Extension + Mobile App), please visit the GitHub repository for setup instructions.
+                🚀 <strong>Welcome to WebTimeWise (TypeScript Demo)</strong><br><br>
+                You're viewing an enhanced TypeScript version of the WebTimeWise Dashboard.
+                This demo features improved type safety, better performance, and enhanced animations.<br><br>
+                The full project includes Chrome Extension + Mobile App integration.
             </div>
             <div class="demo-popup-buttons">
                 <a href="https://github.com/your-username/webtimewise" target="_blank" class="github-btn">
@@ -482,7 +482,7 @@
         </div>
     </div>
 
-    <div class="demo-indicator">🎮 Demo Mode</div>
+    <div class="demo-indicator">🎮 TypeScript Demo</div>
 
     <div class="container">
         <div class="header">
@@ -491,7 +491,7 @@
         </div>
 
         <div class="demo-banner">
-            🚀 <strong>Demo Mode</strong> - Experience WebTimeWise with realistic data across all devices
+            🚀 <strong>Enhanced TypeScript Demo</strong> - Experience WebTimeWise with improved performance and type safety
         </div>
 
         <h2 style="font-size: 2rem; margin-bottom: 15px; font-weight: 700;">📱 Select Device</h2>
@@ -530,31 +530,31 @@
         </div>
 
         <div class="features">
-            <h2>🌟 Key Features</h2>
+            <h2>🌟 Enhanced Features</h2>
             <div class="feature-list">
                 <div class="feature-item">
-                    <strong>🔍 Real-time Tracking</strong><br>
-                    Monitor usage across all devices
+                    <strong>⚡ TypeScript</strong><br>
+                    Full type safety and better development experience
+                </div>
+                <div class="feature-item">
+                    <strong>🎨 Enhanced Animations</strong><br>
+                    Smooth transitions and micro-interactions
                 </div>
                 <div class="feature-item">
                     <strong>📊 Smart Analytics</strong><br>
-                    Detailed insights and patterns
+                    Detailed insights and patterns with Chart.js
                 </div>
                 <div class="feature-item">
                     <strong>🎯 Goal Setting</strong><br>
-                    Set and track productivity goals
+                    Set and track productivity goals with progress bars
                 </div>
                 <div class="feature-item">
                     <strong>🔒 Focus Mode</strong><br>
-                    Block distractions when needed
+                    Enhanced site blocking with local storage
                 </div>
                 <div class="feature-item">
-                    <strong>🗣️ Voice AI Reviews</strong><br>
-                    Weekly voice summaries
-                </div>
-                <div class="feature-item">
-                    <strong>📱 Cross-Platform</strong><br>
-                    Chrome extension + Web + Mobile
+                    <strong>🔔 Smart Notifications</strong><br>
+                    Beautiful toast notifications with animations
                 </div>
             </div>
         </div>
@@ -569,131 +569,6 @@
         </a>
     </div>
 
-    <script>
-        // Store selected scenario in localStorage
-        function setScenario(scenario) {
-            localStorage.setItem('webtimewise_demoScenario', scenario);
-            
-            // Update active button
-            document.querySelectorAll('.scenario-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            if (event && event.target) {
-                event.target.classList.add('active');
-            }
-            
-            // Show notification
-            showNotification(`Scenario set to: ${getScenarioName(scenario)}`);
-        }
-
-        function getScenarioName(scenario) {
-            const names = {
-                'productive': '📚 Productive Day',
-                'social': '📱 Social Media Day',
-                'mixed': '🔄 Mixed Usage',
-                'gaming': '🎮 Gaming Day',
-                'work': '💼 Work Day'
-            };
-            return names[scenario] || scenario;
-        }
-
-        function showNotification(message) {
-            const notification = document.createElement('div');
-            notification.style.cssText = `
-                position: fixed;
-                top: 80px;
-                right: 20px;
-                background: linear-gradient(135deg, #4caf50, #45a049);
-                color: white;
-                padding: 15px 20px;
-                border-radius: 12px;
-                z-index: 10000;
-                box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
-                animation: slideInNotification 0.4s ease;
-                border: 1px solid rgba(255, 255, 255, 0.2);
-                backdrop-filter: blur(10px);
-                font-weight: 500;
-            `;
-            notification.textContent = message;
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.style.animation = 'slideOutNotification 0.4s ease';
-                setTimeout(() => notification.remove(), 400);
-            }, 3000);
-        }
-
-        // Add CSS animations for notifications
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideInNotification {
-                from { transform: translateX(100%); opacity: 0; }
-                to { transform: translateX(0); opacity: 1; }
-            }
-            @keyframes slideOutNotification {
-                from { transform: translateX(0); opacity: 1; }
-                to { transform: translateX(100%); opacity: 0; }
-            }
-        `;
-        document.head.appendChild(style);
-
-        // Initialize app
-        document.addEventListener('DOMContentLoaded', () => {
-            // Check if user has already seen the demo popup in this session
-            const hasSeenDemoPopup = sessionStorage.getItem('webtimewise_hasSeenDemoPopup');
-            const demoPopupOverlay = document.getElementById('demoPopupOverlay');
-            const demoContinueBtn = document.getElementById('demoContinueBtn');
-            
-            // Only show popup if user hasn't seen it in this session
-            if (!hasSeenDemoPopup && demoPopupOverlay) {
-                demoPopupOverlay.classList.remove('hidden');
-            }
-            
-            // Handle continue button click
-            if (demoContinueBtn && demoPopupOverlay) {
-                demoContinueBtn.addEventListener('click', () => {
-                    demoPopupOverlay.classList.add('hidden');
-                    // Mark that user has seen the popup in this session
-                    sessionStorage.setItem('webtimewise_hasSeenDemoPopup', 'true');
-                });
-            }
-            
-            // Close popup when clicking on overlay (outside modal)
-            if (demoPopupOverlay) {
-                demoPopupOverlay.addEventListener('click', (e) => {
-                    if (e.target === demoPopupOverlay) {
-                        demoPopupOverlay.classList.add('hidden');
-                        // Mark that user has seen the popup in this session
-                        sessionStorage.setItem('webtimewise_hasSeenDemoPopup', 'true');
-                    }
-                });
-            }
-            
-            // Initialize default scenario
-            const savedScenario = localStorage.getItem('webtimewise_demoScenario') || 'productive';
-            setScenario(savedScenario);
-
-            // Add entrance animation delay for device cards
-            const deviceCards = document.querySelectorAll('.device-card');
-            deviceCards.forEach((card, index) => {
-                card.style.animation = `fadeInUp 0.6s ease-out ${index * 0.1}s both`;
-            });
-
-            // Add entrance animation for feature items
-            const featureItems = document.querySelectorAll('.feature-item');
-            featureItems.forEach((item, index) => {
-                item.style.animation = `fadeInUp 0.6s ease-out ${0.5 + index * 0.1}s both`;
-            });
-        });
-
-        // Add keyboard support for accessibility
-        document.addEventListener('keydown', (e) => {
-            const demoPopupOverlay = document.getElementById('demoPopupOverlay');
-            if (e.key === 'Escape' && demoPopupOverlay && !demoPopupOverlay.classList.contains('hidden')) {
-                demoPopupOverlay.classList.add('hidden');
-                sessionStorage.setItem('webtimewise_hasSeenDemoPopup', 'true');
-            }
-        });
-    </script>
+    <script type="module" src="/src/main.ts"></script>
 </body>
-</html> 
+</html>

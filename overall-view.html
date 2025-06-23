@@ -4,13 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WebTimeWise - Overall View</title>
-    <link rel="stylesheet" href="../popup.css">
-    <link rel="stylesheet" href="../dashboard.css">
-    <link rel="stylesheet" href="../voiceReview.css">
-    <link rel="stylesheet" href="../focus-block.css">
-    <script src="../lib/chart.min.js"></script>
-    <script src="chrome-compat-demo.js"></script>
-    <script src="demo-data.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         
@@ -94,7 +87,6 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
-        /* Browser Header */
         .browser-header {
             text-align: center;
             margin-bottom: 32px;
@@ -112,23 +104,6 @@
             margin-bottom: 0;
         }
 
-        .view-title {
-            font-size: 1.4rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-            margin-top: 6px;
-            margin-bottom: 24px;
-        }
-
-        /* Language Selector */
-        .flag-container {
-            position: absolute;
-            top: 24px;
-            right: 80px;
-            z-index: 100;
-        }
-
-        /* Time Period Buttons */
         .time-period {
             display: flex;
             justify-content: center;
@@ -161,15 +136,13 @@
             box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
         }
 
-        /* Main Content Grid */
         .main-content {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
             gap: 24px;
             margin-bottom: 24px;
         }
 
-        /* Total Time Card */
         .total-time-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
@@ -179,7 +152,6 @@
             box-shadow: var(--shadow);
             backdrop-filter: blur(10px);
             transition: all 0.3s ease;
-            grid-column: 1 / -1;
         }
 
         .total-time-card:hover {
@@ -204,13 +176,11 @@
             background-clip: text;
         }
 
-        /* Overall Stats Grid */
         .overall-stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
             margin: 24px 0;
-            grid-column: 1 / -1;
         }
 
         .stat-card {
@@ -246,7 +216,6 @@
             background-clip: text;
         }
 
-        /* Chart Container */
         .chart-container {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
@@ -255,72 +224,15 @@
             box-shadow: var(--shadow);
             backdrop-filter: blur(10px);
             height: 350px;
-            grid-column: 1 / -1;
         }
 
-        .charts-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; grid-column:1 / -1; }
-
-        /* Device Breakdown */
-        .device-breakdown {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: var(--shadow);
-            backdrop-filter: blur(10px);
-            grid-column: 1 / -1;
+        .charts-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 24px; 
+            margin: 24px 0;
         }
 
-        .device-breakdown h3 {
-            font-size: 1.2rem;
-            margin-bottom: 16px;
-            color: var(--text-secondary);
-            font-weight: 600;
-        }
-
-        .device-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 0;
-            border-bottom: 1px solid var(--card-border);
-        }
-
-        .device-item:last-child {
-            border-bottom: none;
-        }
-
-        .device-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .device-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, var(--accent-color), var(--accent-purple));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-        }
-
-        .device-details h4 {
-            margin: 0;
-            font-size: 1.1rem;
-            color: var(--text-primary);
-        }
-
-        .device-details p {
-            margin: 0;
-            opacity: 0.7;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-
-        /* Actions */
         .actions {
             display: flex;
             justify-content: center;
@@ -348,7 +260,6 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
-        /* Footer */
         .main-footer {
             display: flex;
             justify-content: space-between;
@@ -376,45 +287,11 @@
             box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
         }
 
-        /* List styles */
-        .site-item, .app-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .site-item:last-child, .app-item:last-child { border-bottom: none; }
-        .site-info, .app-info { display: flex; align-items: center; gap: 12px; }
-        .site-logo, .app-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-        }
-        .app-time { font-weight: 600; color: var(--accent-color); }
-
-        /* list cards */
-        .list-card {background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:24px;box-shadow:var(--shadow);backdrop-filter:blur(10px);}
-        .list-card h3{font-size:1.2rem;margin-bottom:16px;color:var(--text-secondary);font-weight:600}
-        .app-icon img,.site-logo img{width:100%;height:100%;object-fit:contain;border-radius:8px;}
-
-        .progress-bar-wrap{background:rgba(255,255,255,0.08);height:8px;border-radius:6px;margin-top:4px;}
-        .progress-bar{height:100%;background:var(--accent-color);border-radius:6px;}
-
-        .lists-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;grid-column:1 / -1;}
-
-        /* Lists Grid */
         .lists-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 24px;
             margin: 24px 0;
-            grid-column: 1 / -1;
         }
 
         .list-card {
@@ -439,29 +316,38 @@
             font-weight: 600;
         }
 
-        /* Progress bars */
-        .progress-bar-wrap {
-            width: 100%;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 8px;
+        .app-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, var(--accent-green), var(--accent-color));
-            border-radius: 4px;
-            transition: width 0.3s ease;
+        .app-item:last-child { 
+            border-bottom: none; 
         }
 
-        /* App item styling */
-        .app-item .app-icon img {
-            width: 40px;
-            height: 40px;
+        .app-info { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+        }
+
+        .app-icon {
+            width: 32px;
+            height: 32px;
             border-radius: 8px;
-            object-fit: cover;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .app-time { 
+            font-weight: 600; 
+            color: var(--accent-color); 
         }
 
         .app-details h4 {
@@ -476,31 +362,238 @@
             color: var(--text-secondary);
             opacity: 0.8;
         }
+
+        /* Focus Mode Styles */
+        .focus-block-section {
+            margin-top: 24px;
+            padding: 24px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .focus-block-section summary {
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 600;
+            color: var(--accent-color);
+            margin-bottom: 8px;
+            padding: 8px 0;
+        }
+
+        .focus-block-section summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .focus-switch {
+            position: relative;
+            display: inline-block;
+            width: 42px;
+            height: 24px;
+        }
+
+        .focus-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .focus-switch .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 34px;
+        }
+
+        .focus-switch .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        .focus-switch input:checked + .slider {
+            background-color: var(--accent-color);
+        }
+
+        .focus-switch input:checked + .slider:before {
+            transform: translateX(18px);
+        }
+
+        .block-input {
+            display: flex;
+            gap: 8px;
+            margin: 16px 0;
+        }
+
+        .block-input input {
+            flex: 1;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 8px;
+            border-radius: 6px;
+        }
+
+        .block-input button {
+            background-color: var(--accent-color);
+            border: none;
+            color: var(--text-color);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .block-input button:hover {
+            background-color: #3a7bc8;
+        }
+
+        .blocked-site-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .site-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .site-logo {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+        }
+
+        .remove-focus-block-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: color 0.2s ease;
+        }
+
+        .remove-focus-block-btn:hover {
+            color: var(--accent-color);
+        }
+
+        .no-sites {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 20px;
+            font-style: italic;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: var(--bg-secondary);
+            margin: 3% auto;
+            padding: 32px;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 900px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+            color: var(--text-color);
+            position: relative;
+            animation: slide-up 0.4s ease-out forwards;
+            backdrop-filter: blur(10px);
+        }
+
+        @keyframes slide-up {
+            from {
+                margin-top: 25%;
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                margin-top: 3%;
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .close-btn {
+            color: var(--text-secondary);
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            transition: transform 0.2s ease;
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            color: var(--text-color);
+            transform: scale(1.2);
+        }
+
+        .modal-content h2 {
+            text-align: center;
+            color: var(--accent-color);
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .overall-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .lists-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
     <a href="index.html" class="back-btn">← Back</a>
-    <div class="demo-indicator">📊 Demo</div>
+    <div class="demo-indicator">📊 TypeScript Demo</div>
 
     <div class="container">
         <div class="browser-header">
             <h1>Overall Screen Uses</h1>
-        </div>
-
-        
-
-        <div class="flag-container">
-            <div id="selectedFlag" class="selected-flag">
-                <img id="currentFlag" src="../flags/us.png" alt="English" class="flag-icon">
-            </div>
-            <div id="flagDropdown" class="flag-dropdown">
-                <div class="flag-option" data-flag="us"><img src="../flags/us.png" alt="English"><span>English</span></div>
-                <div class="flag-option" data-flag="cn"><img src="../flags/cn.png" alt="中文"><span>中文</span></div>
-                <div class="flag-option" data-flag="in"><img src="../flags/in.png" alt="हिन्दी"><span>हिन्दी</span></div>
-                <div class="flag-option" data-flag="jp"><img src="../flags/jp.png" alt="日本語"><span>日本語</span></div>
-                <div class="flag-option" data-flag="fr"><img src="../flags/fr.png" alt="Français"><span>Français</span></div>
-                <div class="flag-option" data-flag="es"><img src="../flags/es.png" alt="Español"><span>Español</span></div>
-            </div>
         </div>
 
         <div class="time-period">
@@ -547,25 +640,113 @@
             </div>
 
             <div class="lists-grid">
-            <div class="list-card" id="browserSitesCard">
-                <h3>Browser Sites <span id="browserTotal" style="float:right"></span></h3>
-                <div id="overallBrowserList"></div>
-            </div>
+                <div class="list-card">
+                    <h3>Browser Sites</h3>
+                    <div id="overallBrowserList">
+                        <div class="app-item">
+                            <div class="app-info">
+                                <div class="app-icon">📺</div>
+                                <div class="app-details">
+                                    <h4>YouTube</h4>
+                                    <p>Entertainment</p>
+                                </div>
+                            </div>
+                            <div class="app-time">58m</div>
+                        </div>
+                        <div class="app-item">
+                            <div class="app-info">
+                                <div class="app-icon">📚</div>
+                                <div class="app-details">
+                                    <h4>Wikipedia</h4>
+                                    <p>Information</p>
+                                </div>
+                            </div>
+                            <div class="app-time">35m</div>
+                        </div>
+                        <div class="app-item">
+                            <div class="app-info">
+                                <div class="app-icon">🔗</div>
+                                <div class="app-details">
+                                    <h4>Reddit</h4>
+                                    <p>Social</p>
+                                </div>
+                            </div>
+                            <div class="app-time">27m</div>
+                        </div>
+                    </div>
+                </div>
 
-            <div class="list-card" id="mobileAppsCard">
-                <h3>Mobile Apps <span id="mobileTotal" style="float:right"></span></h3>
-                <div id="overallMobileList"></div>
-            </div>
+                <div class="list-card">
+                    <h3>Mobile Apps</h3>
+                    <div id="overallMobileList">
+                        <div class="app-item">
+                            <div class="app-info">
+                                <div class="app-icon">📷</div>
+                                <div class="app-details">
+                                    <h4>Instagram</h4>
+                                    <p>Social Media</p>
+                                </div>
+                            </div>
+                            <div class="app-time">1h  23m</div>
+                        </div>
+                        <div class="app-item">
+                            <div class="app-info">
+                                <div class="app-icon">💬</div>
+                                <div class="app-details">
+                                    <h4>WhatsApp</h4>
+                                    <p>Messaging</p>
+                                </div>
+                            </div>
+                            <div class="app-time">45m</div>
+                        </div>
+                        <div class="app-item">
+                            <div class="app-info">
+                                <div class="app-icon">🎵</div>
+                                <div class="app-details">
+                                    <h4>Spotify</h4>
+                                    <p>Music</p>
+                                </div>
+                            </div>
+                            <div class="app-time">38m</div>
+                        </div>
+                    </div>
+                </div>
 
-            <div class="list-card" id="laptopAppsCard">
-                <h3>Laptop Apps <span id="laptopTotal" style="float:right"></span></h3>
-                <div id="overallLaptopList"></div>
-            </div>
-            </div><!-- end lists-grid -->
-
-            <div class="list-card" id="goalsCard">
-                <h3>🎯 Daily Goals Progress</h3>
-                <div id="goalsList"></div>
+                <div class="list-card">
+                    <h3>Laptop Apps</h3>
+                    <div id="overallLaptopList">
+                        <div class="app-item">
+                            <div class="app-info">
+                                <div class="app-icon">💻</div>
+                                <div class="app-details">
+                                    <h4>VS Code</h4>
+                                    <p>Development</p>
+                                </div>
+                            </div>
+                            <div class="app-time">2h 15m</div>
+                        </div>
+                        <div class="app-item">
+                            <div class="app-info">
+                                <div class="app-icon">🌐</div>
+                                <div class="app-details">
+                                    <h4>Chrome</h4>
+                                    <p>Browser</p>
+                                </div>
+                            </div>
+                            <div class="app-time">1h 45m</div>
+                        </div>
+                        <div class="app-item">
+                            <div class="app-info">
+                                <div class="app-icon">📧</div>
+                                <div class="app-details">
+                                    <h4>Outlook</h4>
+                                    <p>Email</p>
+                                </div>
+                            </div>
+                            <div class="app-time">45m</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -590,21 +771,30 @@
                 <input type="text" id="focusSiteToBlock" placeholder="e.g., facebook.com">
                 <button id="addFocusBlockBtn">➕</button>
             </div>
-            <div class="focus-timer">
-                <input type="number" id="focusDuration" placeholder="Minutes (optional)">
-                <button id="startFocusBtn">Start Focus</button>
-            </div>
-            <p id="focusCountdown" class="note"></p>
-            <p class="note">These sites will only be blocked when Focus Mode is active.</p>
+            <p class="note" style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 8px;">
+                These sites will only be blocked when Focus Mode is active.
+            </p>
         </details>
 
         <footer class="main-footer">
             <button id="dashboardBtn" class="footer-btn">Back to Devices</button>
-            <a href="https://bolt.new" target="_blank" class="bolt-badge-logo">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="18" height="18" style="margin-right: 8px;">
-                <path d="M13 2L3 14h7l-1 8L21 10h-7l1-8z"/>
-              </svg>
-              <span>Built with <strong>Bolt</strong></span>
+            <a href="https://bolt.new" target="_blank" style="
+                display: inline-flex;
+                align-items: center;
+                padding: 6px 14px;
+                border-radius: 30px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                font-size: 14px;
+                font-weight: 500;
+                text-decoration: none;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+                transition: transform 0.2s ease;
+            " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="18" height="18" style="margin-right: 8px;">
+                    <path d="M13 2L3 14h7l-1 8L21 10h-7l1-8z"/>
+                </svg>
+                <span>Built with <strong>Bolt</strong></span>
             </a>
         </footer>
     </div>
@@ -620,11 +810,6 @@
             <div class="chart-container" style="height: 250px; margin: 30px 0 20px 0;">
                 <canvas id="weeklyWebsiteChart"></canvas>
             </div>
-            <div id="voiceReviewCard" class="voice-review-card">
-                <h3 style="text-align:center;">🔊 Weekly AI Review</h3>
-                <p id="voiceSummaryText">This week, you spent 87 hours across all devices. 45 hours were productive, 25 hours on entertainment, and 17 hours on social media. Great work on hitting your daily goals 5 out of 7 days!</p>
-                <button id="replayVoiceBtn" class="action-btn" style="width:100%;margin-top:8px;">Replay 🔁</button>
-            </div>
             <button id="exportDataBtn" class="action-btn">Export Data</button>
         </div>
     </div>
@@ -633,7 +818,6 @@
         <div class="modal-content">
             <span class="close-btn" id="closeGoalsBtn">&times;</span>
             <h2>Your Goals</h2>
-            <div class="streak-info"></div>
             <div class="goals-container"></div>
             <button id="editGoalsBtn" class="action-btn">Edit Goals</button>
         </div>
@@ -649,437 +833,6 @@
         </div>
     </div>
 
-    <div id="editGoalsModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" id="closeEditGoalsBtn">&times;</span>
-            <h2>Edit Goals</h2>
-            <form id="categoryGoals"></form>
-            <button id="saveGoalsBtn" class="action-btn">Save Goals</button>
-        </div>
-    </div>
-
-    <script>
-        let deviceChart, categoryChart;
-
-        // Dummy data arrays (minutes)
-        const deviceTodayData = [360, 240, 120]; // Laptop, Mobile, Browser
-        const deviceWeekData  = deviceTodayData.map(v => v * 7);
-
-        const categoryTodayData = [180, 120, 90, 60, 45, 75]; // Social, Productive, Games, Other, News, Entertainment
-        const categoryWeekData  = categoryTodayData.map(v => v * 7);
-
-        // Today vs Week data for all sections
-        const todayData = {
-            totalTime: '12h 34m',
-            devices: {
-                laptop: '6h 45m',
-                mobile: '4h 23m',
-                browser: '1h 26m'
-            },
-            focusScore: '87%',
-            title: 'Total Digital Time Today'
-        };
-
-        const weekData = {
-            totalTime: '87h 58m',
-            devices: {
-                laptop: '47h 15m',
-                mobile: '30h 41m',
-                browser: '10h 2m'
-            },
-            focusScore: '82%',
-            title: 'Total Digital Time This Week'
-        };
-
-        // Weekly data for lists (multiplied by 7 with some variation)
-        const weeklyBrowserData = {
-            topSites: [
-                { name: 'YouTube', category: 'Entertainment', time: '14h 35m', favicon: '🎥' },
-                { name: 'GitHub', category: 'Development', time: '12h 20m', favicon: '💻' },
-                { name: 'Stack Overflow', category: 'Development', time: '8h 45m', favicon: '📚' },
-                { name: 'Reddit', category: 'Social Media', time: '7h 30m', favicon: '🔗' },
-                { name: 'Wikipedia', category: 'Educational', time: '6h 15m', favicon: '📖' },
-                { name: 'Gmail', category: 'Communication', time: '5h 40m', favicon: '📧' },
-                { name: 'Twitter', category: 'Social Media', time: '4h 25m', favicon: '🐦' },
-                { name: 'LinkedIn', category: 'Professional', time: '3h 50m', favicon: '💼' }
-            ]
-        };
-
-        const weeklyMobileData = {
-            apps: [
-                { name: 'Instagram', category: 'Social Media', time: '21h 30m', icon: '📷', logo: null },
-                { name: 'WhatsApp', category: 'Communication', time: '18h 45m', icon: '💬', logo: null },
-                { name: 'YouTube', category: 'Entertainment', time: '16h 20m', icon: '🎥', logo: null },
-                { name: 'Spotify', category: 'Music', time: '14h 15m', icon: '🎵', logo: null },
-                { name: 'TikTok', category: 'Entertainment', time: '12h 40m', icon: '🎬', logo: null },
-                { name: 'Gmail', category: 'Communication', time: '9h 25m', icon: '📧', logo: null },
-                { name: 'Maps', category: 'Navigation', time: '7h 10m', icon: '🗺️', logo: null },
-                { name: 'Twitter', category: 'Social Media', time: '6h 35m', icon: '🐦', logo: null }
-            ]
-        };
-
-        const weeklyLaptopData = {
-            applications: [
-                { name: 'Visual Studio Code', category: 'Development', time: '28h 45m', icon: '💻', logo: null },
-                { name: 'Chrome', category: 'Browser', time: '24h 30m', icon: '🌐', logo: null },
-                { name: 'Slack', category: 'Communication', time: '16h 20m', icon: '💬', logo: null },
-                { name: 'Figma', category: 'Design', time: '14h 15m', icon: '🎨', logo: null },
-                { name: 'Terminal', category: 'Development', time: '12h 40m', icon: '⚡', logo: null },
-                { name: 'Spotify', category: 'Music', time: '10h 25m', icon: '🎵', logo: null },
-                { name: 'Notion', category: 'Productivity', time: '8h 50m', icon: '📝', logo: null },
-                { name: 'Zoom', category: 'Communication', time: '7h 15m', icon: '📹', logo: null }
-            ]
-        };
-
-        document.addEventListener('DOMContentLoaded', () => {
-            // Check if Chart.js is available
-            if (typeof Chart === 'undefined') {
-                console.error('Chart.js is not loaded!');
-                return;
-            }
-
-            console.log('DOM loaded, initializing charts...');
-            console.log('Chart.js available:', typeof Chart);
-            console.log('DemoDataHelper available:', typeof DemoDataHelper);
-
-            // Check if DemoDataHelper is available
-            if (typeof DemoDataHelper === 'undefined') {
-                console.error('DemoDataHelper is not available!');
-                return;
-            }
-
-            const overallData = DemoDataHelper.getOverallData();
-            console.log('Overall data:', overallData);
-
-            // Check if canvas elements exist
-            const deviceCanvas = document.getElementById('deviceChart');
-            const categoryCanvas = document.getElementById('categoryChart');
-            
-            if (!deviceCanvas) {
-                console.error('Device chart canvas not found!');
-                return;
-            }
-            
-            if (!categoryCanvas) {
-                console.error('Category chart canvas not found!');
-                return;
-            }
-
-            const deviceCtx = document.getElementById('deviceChart').getContext('2d');
-            console.log('Device canvas found:', !!deviceCtx);
-            deviceChart = new Chart(deviceCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Laptop', 'Mobile', 'Browser'],
-                    datasets: [{
-                        data: deviceTodayData,
-                        backgroundColor: [
-                            '#007ACC', '#E4405F', '#4285F4'
-                        ],
-                        borderColor: 'rgba(255, 255, 255, 0.1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'right',
-                            labels: {
-                                color: '#ffffff',
-                                boxWidth: 15,
-                                padding: 20,
-                                font: {
-                                    size: 12
-                                }
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const label = context.label || '';
-                                    const value = context.raw || 0;
-                                    return `${label}: ${value}m`;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-            console.log('Device chart created');
-
-            // Category chart setup
-            const categoryCtx = document.getElementById('categoryChart').getContext('2d');
-            console.log('Category canvas found:', !!categoryCtx);
-            const categoryColors = ['#4285F4','#34A853','#FBBC05','#EA4335','#9C27B0','#FF9800'];
-
-            // initialise category chart with today data
-            categoryChart = new Chart(categoryCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Social Media', 'Productive', 'Games', 'Other', 'News', 'Entertainment'],
-                    datasets: [{
-                        data: categoryTodayData,
-                        backgroundColor: categoryColors,
-                        borderColor: 'rgba(255,255,255,0.1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'right',
-                            labels: {
-                                color: '#ffffff',
-                                boxWidth: 15,
-                                padding: 20,
-                                font: { size: 12 }
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context){
-                                    const label = context.label || '';
-                                    const value = context.raw || 0;
-                                    return `${label}: ${value}m`;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-            console.log('Category chart created');
-
-            // Today / Week toggle behaviour
-            const todayBtn = document.getElementById('todayBtn');
-            const weekBtn  = document.getElementById('weekBtn');
-            console.log('Toggle buttons found:', !!todayBtn, !!weekBtn);
-
-            function updateCharts(isWeek){
-                console.log('Updating charts for:', isWeek ? 'week' : 'today');
-                const devData = isWeek ? deviceWeekData : deviceTodayData;
-                const catData = isWeek ? categoryWeekData : categoryTodayData;
-
-                // Update charts
-                deviceChart.data.datasets[0].data = devData;
-                deviceChart.update();
-
-                categoryChart.data.datasets[0].data = catData;
-                categoryChart.update();
-
-                // Update goals
-                updateGoals(isWeek);
-
-                // Update all other sections with weekly/daily data
-                updateAllSections(isWeek);
-
-                if(isWeek){
-                    todayBtn.classList.remove('active');
-                    weekBtn.classList.add('active');
-                }else{
-                    weekBtn.classList.remove('active');
-                    todayBtn.classList.add('active');
-                }
-            }
-
-            function updateAllSections(isWeek) {
-                const currentData = isWeek ? weekData : todayData;
-                const currentBrowserData = isWeek ? weeklyBrowserData : DemoDataHelper.getBrowserData();
-                const currentMobileData = isWeek ? weeklyMobileData : DemoDataHelper.getMobileData();
-                const currentLaptopData = isWeek ? weeklyLaptopData : DemoDataHelper.getLaptopData();
-
-                // Update total time and title
-                const totalTimeEl = document.getElementById('totalTime');
-                const totalTimeCardTitle = document.querySelector('.total-time-card h2');
-                if (totalTimeEl) totalTimeEl.textContent = currentData.totalTime;
-                if (totalTimeCardTitle) totalTimeCardTitle.textContent = currentData.title;
-
-                // Update device stats cards
-                const statCards = document.querySelectorAll('.stat-card');
-                if (statCards.length >= 4) {
-                    statCards[0].querySelector('.value').textContent = currentData.devices.laptop;
-                    statCards[1].querySelector('.value').textContent = currentData.devices.mobile;
-                    statCards[2].querySelector('.value').textContent = currentData.devices.browser;
-                    statCards[3].querySelector('.value').textContent = currentData.focusScore;
-                }
-
-                // Update Browser Sites List
-                const browserList = document.getElementById('overallBrowserList');
-                if (browserList && currentBrowserData.topSites) {
-                    browserList.innerHTML = currentBrowserData.topSites.map(site => `
-                        <div class="app-item">
-                            <div class="app-info">
-                                <div class="app-icon">${site.favicon}</div>
-                                <div class="app-details">
-                                    <h4>${site.name}</h4>
-                                    <p>${site.category}</p>
-                                </div>
-                            </div>
-                            <div class="app-time">${site.time}</div>
-                        </div>
-                    `).join('');
-                }
-
-                // Update Mobile Apps List
-                const mobileList = document.getElementById('overallMobileList');
-                if (mobileList && currentMobileData.apps) {
-                    mobileList.innerHTML = currentMobileData.apps.map(app => `
-                        <div class="app-item">
-                            <div class="app-info">
-                                <div class="app-icon">${app.logo ? `<img src="${app.logo}" style="width:40px;height:40px;border-radius:8px;" />` : app.icon}</div>
-                                <div class="app-details">
-                                    <h4>${app.name}</h4>
-                                    <p>${app.category}</p>
-                                </div>
-                            </div>
-                            <div class="app-time">${app.time}</div>
-                        </div>
-                    `).join('');
-                }
-
-                // Update Laptop Apps List
-                const laptopList = document.getElementById('overallLaptopList');
-                if (laptopList && currentLaptopData.applications) {
-                    laptopList.innerHTML = currentLaptopData.applications.map(app => `
-                        <div class="app-item">
-                            <div class="app-info">
-                                <div class="app-icon">${app.logo ? `<img src="${app.logo}" style="width:40px;height:40px;border-radius:8px;" />` : app.icon}</div>
-                                <div class="app-details">
-                                    <h4>${app.name}</h4>
-                                    <p>${app.category}</p>
-                                </div>
-                            </div>
-                            <div class="app-time">${app.time}</div>
-                        </div>
-                    `).join('');
-                }
-
-                // Update totals
-                const browserTotalEl = document.getElementById('browserTotal');
-                const mobileTotalEl = document.getElementById('mobileTotal');
-                const laptopTotalEl = document.getElementById('laptopTotal');
-
-                if (browserTotalEl && currentBrowserData.topSites) {
-                    const browserTotal = sumMinutes(currentBrowserData.topSites);
-                    browserTotalEl.textContent = formatMinutes(browserTotal);
-                }
-
-                if (mobileTotalEl && currentMobileData.apps) {
-                    const mobileTotal = sumMinutes(currentMobileData.apps);
-                    mobileTotalEl.textContent = formatMinutes(mobileTotal);
-                }
-
-                if (laptopTotalEl && currentLaptopData.applications) {
-                    const laptopTotal = sumMinutes(currentLaptopData.applications);
-                    laptopTotalEl.textContent = formatMinutes(laptopTotal);
-                }
-
-                // Update goals title
-                const goalsCardTitle = document.querySelector('#goalsCard h3');
-                if (goalsCardTitle) {
-                    goalsCardTitle.textContent = isWeek ? '🎯 Weekly Goals Progress' : '🎯 Daily Goals Progress';
-                }
-            }
-
-            todayBtn.addEventListener('click', () => updateCharts(false));
-            weekBtn.addEventListener('click', () => updateCharts(true));
-
-            // Override dashboard button
-            const dashboardBtn = document.getElementById('dashboardBtn');
-            if (dashboardBtn) {
-                dashboardBtn.addEventListener('click', () => {
-                    window.location.href = 'index.html';
-                });
-            }
-
-            console.log('All initialization complete');
-
-            // Helper functions for time parsing and formatting
-            function parseTimeToMinutes(timeStr) {
-                let minutes = 0;
-                const parts = timeStr.split(' ');
-                for (const part of parts) {
-                    if (part.endsWith('h')) {
-                        minutes += parseInt(part) * 60;
-                    } else if (part.endsWith('m')) {
-                        minutes += parseInt(part);
-                    }
-                }
-                return minutes;
-            }
-            
-            function formatMinutes(min) {
-                const h = Math.floor(min / 60);
-                const mm = min % 60;
-                return h > 0 ? `${h}h ${mm}m` : `${mm}m`;
-            }
-
-            // Calculate and display totals
-            function sumMinutes(arr) {
-                return arr.reduce((acc, item) => {
-                    let minutes = 0;
-                    const timeStr = item.time;
-                    timeStr.split(' ').forEach(part => {
-                        if (part.endsWith('h')) minutes += parseInt(part) * 60;
-                        if (part.endsWith('m')) minutes += parseInt(part);
-                    });
-                    return acc + minutes;
-                }, 0);
-            }
-
-            // Goals progress with specific data
-            const goalsData = [
-                { name: 'Social Media', actual: '1h 37m', goal: '2h' },
-                { name: 'Entertainment', actual: '30m', goal: '1h 30m' },
-                { name: 'Productive / Educational', actual: '1h 54m', goal: '4h' },
-                { name: 'Development', actual: '31m', goal: '3h' },
-                { name: 'Games', actual: '1h 52m', goal: '2h' },
-                { name: 'Communication', actual: '9m', goal: '1h' }
-            ];
-            
-            // Weekly goals data (same as daily multiplied by 7)
-            const goalsWeekData = goalsData.map(g => ({
-                name: g.name,
-                actual: formatMinutes(parseTimeToMinutes(g.actual) * 7),
-                goal: formatMinutes(parseTimeToMinutes(g.goal) * 7)
-            }));
-            
-            function updateGoals(isWeek) {
-                const currentGoalsData = isWeek ? goalsWeekData : goalsData;
-                const goalsList = document.getElementById('goalsList');
-                if (goalsList) {
-                    goalsList.innerHTML = currentGoalsData.map(g => {
-                        const actualMin = parseTimeToMinutes(g.actual);
-                        const goalMin = parseTimeToMinutes(g.goal);
-                        const pct = Math.min(100, Math.round(actualMin / goalMin * 100));
-                        return `
-                            <div style="margin-bottom:12px;">
-                                <strong>${g.name}</strong>
-                                <div style="display:flex;justify-content:space-between;font-size:0.85rem;">
-                                    <span>${g.actual} / ${g.goal}</span>
-                                </div>
-                                <div class="progress-bar-wrap">
-                                    <div class="progress-bar" style="width:${pct}%;"></div>
-                                </div>
-                            </div>
-                        `;
-                    }).join('');
-                }
-            }
-            
-            // Initial goals render
-            updateGoals(false);
-
-            // Initial population of all sections with today's data
-            updateAllSections(false);
-
-            console.log('All data population complete');
-        });
-    </script>
+    <script type="module" src="/src/main.ts"></script>
 </body>
-</html> 
+</html>

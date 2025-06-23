@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WebTimeWise - Browser View</title>
-    <link rel="stylesheet" href="dashboard.css">
-    <script src="lib/chart.min.js"></script>
-    <script src="demo-data.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         
@@ -21,9 +18,6 @@
             --text-color: #ffffff;
             --accent-color: #4a90e2;
             --accent-green: #4caf50;
-            --accent-orange: #ff9800;
-            --accent-purple: #9c27b0;
-            --border-color: rgba(255, 255, 255, 0.15);
             --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.4);
         }
@@ -90,7 +84,6 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
-        /* Browser Header */
         .browser-header {
             text-align: center;
             margin-bottom: 32px;
@@ -101,7 +94,7 @@
             font-size: 3rem;
             font-weight: 700;
             margin: 0;
-            background: linear-gradient(135deg, var(--accent-color), var(--accent-purple));
+            background: linear-gradient(135deg, var(--accent-color), #9c27b0);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -116,81 +109,6 @@
             margin-bottom: 24px;
         }
 
-        /* Language Selector */
-        .flag-container {
-            position: absolute;
-            top: 24px;
-            right: 80px;
-            z-index: 100;
-        }
-
-        .selected-flag {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 8px;
-            padding: 8px 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
-
-        .selected-flag:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-1px);
-        }
-
-        .flag-icon {
-            width: 20px;
-            height: 15px;
-            border-radius: 2px;
-            object-fit: cover;
-        }
-
-        .flag-dropdown {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 8px;
-            margin-top: 4px;
-            min-width: 140px;
-            box-shadow: var(--shadow);
-            backdrop-filter: blur(10px);
-            display: none;
-            overflow: hidden;
-        }
-
-        .flag-dropdown.show {
-            display: block;
-        }
-
-        .flag-option {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 12px;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-            color: var(--text-primary);
-            font-size: 0.9rem;
-        }
-
-        .flag-option:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .flag-option img {
-            width: 16px;
-            height: 12px;
-            border-radius: 2px;
-            object-fit: cover;
-        }
-
-        /* Time Period Buttons */
         .time-period {
             display: flex;
             justify-content: center;
@@ -223,15 +141,13 @@
             box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
         }
 
-        /* Main Content Grid */
         .main-content {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
             gap: 24px;
             margin-bottom: 24px;
         }
 
-        /* Total Time Card */
         .total-time-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
@@ -241,7 +157,6 @@
             box-shadow: var(--shadow);
             backdrop-filter: blur(10px);
             transition: all 0.3s ease;
-            grid-column: 1 / -1;
         }
 
         .total-time-card:hover {
@@ -266,7 +181,6 @@
             background-clip: text;
         }
 
-        /* View Switcher */
         .view-switcher {
             display: flex;
             justify-content: center;
@@ -279,7 +193,6 @@
             margin-left: auto;
             margin-right: auto;
             box-shadow: var(--shadow);
-            grid-column: 1 / -1;
         }
 
         .view-btn, .switcher-btn {
@@ -300,7 +213,6 @@
             box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
         }
 
-        /* Chart Container */
         .chart-container {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
@@ -309,10 +221,8 @@
             box-shadow: var(--shadow);
             backdrop-filter: blur(10px);
             height: 350px;
-            grid-column: 1 / -1;
         }
 
-        /* Data Table Section */
         .data-table-section {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
@@ -320,7 +230,6 @@
             padding: 24px;
             box-shadow: var(--shadow);
             backdrop-filter: blur(10px);
-            grid-column: 1 / -1;
             margin-top: 20px;
         }
 
@@ -391,19 +300,6 @@
             color: var(--accent-color);
         }
 
-
-        .top-sites h2 {
-            font-size: 1.2rem;
-            margin-bottom: 16px;
-            color: var(--text-secondary);
-            font-weight: 600;
-        }
-
-
-
-
-
-        /* Actions */
         .actions {
             display: flex;
             justify-content: center;
@@ -431,7 +327,6 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
-        /* Footer */
         .main-footer {
             display: flex;
             justify-content: space-between;
@@ -458,208 +353,16 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
         }
-
-        /* Modal styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px);
-        }
-
-        .modal-content {
-            background: var(--card-bg);
-            margin: 5% auto;
-            padding: 32px;
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            width: 90%;
-            max-width: 600px;
-            box-shadow: var(--shadow);
-            position: relative;
-        }
-
-        .close-btn {
-            color: var(--text-secondary);
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            position: absolute;
-            top: 16px;
-            right: 24px;
-        }
-
-        .close-btn:hover {
-            color: var(--text-primary);
-        }
-
-        /* Demo Popup Modal */
-        .demo-popup-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            z-index: 2000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        .demo-popup-modal {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 32px;
-            max-width: 500px;
-            width: 90%;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-            text-align: center;
-            position: relative;
-            animation: slideIn 0.4s ease-out;
-        }
-
-        .demo-popup-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .demo-popup-body {
-            color: var(--text-secondary);
-            line-height: 1.6;
-            margin-bottom: 24px;
-            font-size: 0.95rem;
-        }
-
-        .demo-popup-buttons {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .github-btn {
-            background: #24292e;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 12px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .github-btn:hover {
-            background: #1a1e22;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(36, 41, 46, 0.4);
-        }
-
-        .demo-continue-btn {
-            background: var(--accent-color);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 12px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .demo-continue-btn:hover {
-            background: #3a7bc8;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes slideIn {
-            from { 
-                opacity: 0;
-                transform: translateY(-30px) scale(0.95);
-            }
-            to { 
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        .demo-popup-overlay.hidden {
-            display: none;
-        }
     </style>
 </head>
 <body>
-    <!-- Demo Popup Modal -->
-    <div id="demoPopupOverlay" class="demo-popup-overlay">
-        <div class="demo-popup-modal">
-            <div class="demo-popup-title">
-                🚧 Demo Dashboard Only
-            </div>
-            <div class="demo-popup-body">
-                This is a simplified demo version of the WebTimeWise Dashboard. It is not connected to the backend, mobile app, or AI tools. To use the full version (including the Chrome Extension and Mobile App), please visit the GitHub repository.
-            </div>
-            <div class="demo-popup-buttons">
-                <a href="https://github.com/your-username/webtimewise" target="_blank" class="github-btn">
-                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
-                    </svg>
-                    Go to GitHub
-                </a>
-                <button id="demoContinueBtn" class="demo-continue-btn">
-                    Continue to Demo
-                </button>
-            </div>
-        </div>
-    </div>
-
     <a href="index.html" class="back-btn">← Back</a>
-    <div class="demo-indicator">🌐 Demo</div>
+    <div class="demo-indicator">🌐 TypeScript Demo</div>
 
     <div class="container">
         <div class="browser-header">
             <h1>WebTimeWise</h1>
             <div class="view-title">Browser Screen Uses</div>
-        </div>
-
-        <div class="flag-container">
-            <div id="selectedFlag" class="selected-flag">
-                <img id="currentFlag" src="flags/us.png" alt="English" class="flag-icon">
-            </div>
-            <div id="flagDropdown" class="flag-dropdown">
-                <div class="flag-option" data-flag="us"><img src="flags/us.png" alt="English"><span>English</span></div>
-                <div class="flag-option" data-flag="cn"><img src="flags/cn.png" alt="中文"><span>中文</span></div>
-                <div class="flag-option" data-flag="in"><img src="flags/in.png" alt="हिन्दी"><span>हिन्दी</span></div>
-                <div class="flag-option" data-flag="jp"><img src="flags/jp.png" alt="日本語"><span>日本語</span></div>
-                <div class="flag-option" data-flag="fr"><img src="flags/fr.png" alt="Français"><span>Français</span></div>
-                <div class="flag-option" data-flag="es"><img src="flags/es.png" alt="Español"><span>Español</span></div>
-            </div>
         </div>
 
         <div class="time-period">
@@ -682,11 +385,45 @@
                 <canvas id="categoryChart"></canvas>
             </div>
             
-            <!-- Data Table Section -->
             <div class="data-table-section">
                 <h3 id="dataTableTitle">Time Breakdown</h3>
                 <div id="dataTableContainer" class="data-table">
-                    <p style="text-align: center; opacity: 0.7; margin: 20px 0;">Click on a chart section to view detailed breakdown</p>
+                    <div class="data-table-item">
+                        <div class="data-item-info">
+                            <div class="data-item-icon">🎬</div>
+                            <div class="data-item-details">
+                                <h4>Entertainment</h4>
+                            </div>
+                        </div>
+                        <div class="data-item-time">1h 23m 29s</div>
+                    </div>
+                    <div class="data-table-item">
+                        <div class="data-item-info">
+                            <div class="data-item-icon">🎮</div>
+                            <div class="data-item-details">
+                                <h4>Games</h4>
+                            </div>
+                        </div>
+                        <div class="data-item-time">0h 58m 4s</div>
+                    </div>
+                    <div class="data-table-item">
+                        <div class="data-item-info">
+                            <div class="data-item-icon">📱</div>
+                            <div class="data-item-details">
+                                <h4>Social Media</h4>
+                            </div>
+                        </div>
+                        <div class="data-item-time">0h 39m 17s</div>
+                    </div>
+                    <div class="data-table-item">
+                        <div class="data-item-info">
+                            <div class="data-item-icon">📂</div>
+                            <div class="data-item-details">
+                                <h4>Other / Uncategorized</h4>
+                            </div>
+                        </div>
+                        <div class="data-item-time">0h 37m 56s</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -699,425 +436,27 @@
 
         <footer class="main-footer">
             <button id="dashboardBtn" class="footer-btn">Full Dashboard</button>
-            <a href="https://bolt.new" target="_blank" class="bolt-badge-logo">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="18" height="18" style="margin-right: 8px;">
-                <path d="M13 2L3 14h7l-1 8L21 10h-7l1-8z"/>
-              </svg>
-              <span>Built with <strong>Bolt</strong></span>
+            <a href="https://bolt.new" target="_blank" style="
+                display: inline-flex;
+                align-items: center;
+                padding: 6px 14px;
+                border-radius: 30px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                font-size: 14px;
+                font-weight: 500;
+                text-decoration: none;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+                transition: transform 0.2s ease;
+            " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="18" height="18" style="margin-right: 8px;">
+                    <path d="M13 2L3 14h7l-1 8L21 10h-7l1-8z"/>
+                </svg>
+                <span>Built with <strong>Bolt</strong></span>
             </a>
         </footer>
     </div>
 
-    <!-- Modals -->
-    <div id="moreModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" id="closeMoreBtn">&times;</span>
-            <h2>Weekly Summary</h2>
-            <div class="chart-container" style="height: 250px; margin: 20px 0;">
-                <canvas id="weeklyChart"></canvas>
-            </div>
-            <div class="chart-container" style="height: 250px; margin: 30px 0 20px 0;">
-                <canvas id="weeklyWebsiteChart"></canvas>
-            </div>
-            <div id="voiceReviewCard" class="voice-review-card">
-                <h3 style="text-align:center;">🔊 Weekly AI Review</h3>
-                <p id="voiceSummaryText">This week, you spent 14 hours on your devices. 5 hours were productive, 4 hours on entertainment, and 5 hours on social media. Great work on hitting your daily goals 4 out of 7 days!</p>
-                <button id="replayVoiceBtn" class="action-btn" style="width:100%;margin-top:8px;">Replay 🔁</button>
-            </div>
-            <button id="exportDataBtn" class="action-btn">Export Data</button>
-        </div>
-    </div>
-
-    <div id="goalsModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" id="closeGoalsBtn">&times;</span>
-            <h2>Your Goals</h2>
-            <div class="streak-info"></div>
-            <div class="goals-container"></div>
-            <button id="editGoalsBtn" class="action-btn">Edit Goals</button>
-        </div>
-    </div>
-
-    <div id="settingsModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" id="closeSettingsBtn">&times;</span>
-            <h2>Settings</h2>
-            <h3>Manage Categories</h3>
-            <div id="categoriesList"></div>
-            <button id="saveSettingsBtn" class="action-btn">Save Settings</button>
-        </div>
-    </div>
-
-    <script>
-        // Initialize with dummy data
-        document.addEventListener('DOMContentLoaded', () => {
-            // Handle demo popup
-            const demoPopupOverlay = document.getElementById('demoPopupOverlay');
-            const demoContinueBtn = document.getElementById('demoContinueBtn');
-            
-            // Show popup on page load (it's already visible by default)
-            
-            // Handle continue button click
-            if (demoContinueBtn && demoPopupOverlay) {
-                demoContinueBtn.addEventListener('click', () => {
-                    demoPopupOverlay.classList.add('hidden');
-                });
-            }
-            
-            // Close popup when clicking on overlay (outside modal)
-            if (demoPopupOverlay) {
-                demoPopupOverlay.addEventListener('click', (e) => {
-                    if (e.target === demoPopupOverlay) {
-                        demoPopupOverlay.classList.add('hidden');
-                    }
-                });
-            }
-            
-            const browserData = DemoDataHelper.getBrowserData();
-            const chartData = DemoDataHelper.getCategoryChartData();
-            
-            // Data for Today vs Week
-            const todayData = {
-                totalTime: '3h 38m',
-                title: 'Total Time Today'
-            };
-            
-            const weekData = {
-                totalTime: '25h 26m',
-                title: 'Total Time This Week'
-            };
-            
-            // Update total time - fix the display issue
-            const totalTimeEl = document.getElementById('totalTime');
-            const totalTimeTitle = document.querySelector('.total-time-card h2');
-            
-            if (totalTimeEl && browserData.totalTime) {
-                totalTimeEl.textContent = browserData.totalTime;
-            } else if (totalTimeEl) {
-                totalTimeEl.textContent = todayData.totalTime;
-            }
-            
-            // Today/Week toggle functionality
-            const todayBtn = document.getElementById('todayBtn');
-            const weekBtn = document.getElementById('weekBtn');
-            
-            function updateTimeDisplay(isWeek) {
-                const currentData = isWeek ? weekData : todayData;
-                if (totalTimeEl) totalTimeEl.textContent = currentData.totalTime;
-                if (totalTimeTitle) totalTimeTitle.textContent = currentData.title;
-                
-                // Update button states
-                if (isWeek) {
-                    todayBtn.classList.remove('active');
-                    weekBtn.classList.add('active');
-                } else {
-                    weekBtn.classList.remove('active');
-                    todayBtn.classList.add('active');
-                }
-            }
-            
-            if (todayBtn && weekBtn) {
-                todayBtn.addEventListener('click', () => updateTimeDisplay(false));
-                weekBtn.addEventListener('click', () => updateTimeDisplay(true));
-            }
-            
-            // Initialize charts
-            const ctx = document.getElementById('categoryChart').getContext('2d');
-            let currentChart;
-            
-            // Function to create category chart
-            function createCategoryChart() {
-                if (currentChart) currentChart.destroy();
-                currentChart = new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: chartData.labels,
-                        datasets: [{
-                            data: chartData.data,
-                            backgroundColor: chartData.colors,
-                            borderColor: 'rgba(255, 255, 255, 0.1)',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                display: true,
-                                position: 'right',
-                                labels: {
-                                    color: '#ffffff',
-                                    boxWidth: 15,
-                                    padding: 20,
-                                    font: {
-                                        size: 12
-                                    }
-                                }
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        const label = context.label || '';
-                                        const value = context.raw || 0;
-                                        return `${label}: ${value}%`;
-                                    }
-                                }
-                            }
-                        },
-                        onClick: (event, elements) => {
-                            // Chart click functionality can be added here if needed
-                            // For now, we always show all categories
-                        }
-                    }
-                });
-                
-                // Show category data by default
-                showCategoryData();
-            }
-            
-            // Function to create website chart
-            function createWebsiteChart() {
-                if (currentChart) currentChart.destroy();
-                const websiteData = browserData.topSites.slice(0, 6);
-                const websiteColors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD'];
-                
-                currentChart = new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: websiteData.map(site => site.name),
-                        datasets: [{
-                            data: [23, 19, 15, 12, 8, 6],
-                            backgroundColor: websiteColors,
-                            borderColor: 'rgba(255, 255, 255, 0.1)',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                display: true,
-                                position: 'right',
-                                labels: {
-                                    color: '#ffffff',
-                                    boxWidth: 15,
-                                    padding: 20,
-                                    font: {
-                                        size: 12
-                                    }
-                                }
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        const label = context.label || '';
-                                        const value = context.raw || 0;
-                                        return `${label}: ${value}%`;
-                                    }
-                                }
-                            }
-                        },
-                        onClick: (event, elements) => {
-                            // Chart click functionality can be added here if needed
-                            // For now, we always show all websites
-                        }
-                    }
-                });
-                
-                // Show website data by default
-                showWebsiteData();
-            }
-            
-            // Function to show category data in table
-            function showCategoryData(category) {
-                const dataTableTitle = document.getElementById('dataTableTitle');
-                const dataTableContainer = document.getElementById('dataTableContainer');
-                
-                // Always show "Time by Category" title for category view
-                dataTableTitle.textContent = 'Time by Category';
-                
-                // Show all categories with their times
-                const allCategories = [
-                    { name: 'Entertainment', time: '1h 23m 29s', icon: '🎬' },
-                    { name: 'Games', time: '0h 58m 4s', icon: '🎮' },
-                    { name: 'Social Media', time: '0h 39m 17s', icon: '📱' },
-                    { name: 'Other / Uncategorized', time: '0h 37m 56s', icon: '📂' }
-                ];
-                
-                dataTableContainer.innerHTML = allCategories.map(category => `
-                    <div class="data-table-item">
-                        <div class="data-item-info">
-                            <div class="data-item-icon">${category.icon}</div>
-                            <div class="data-item-details">
-                                <h4>${category.name}</h4>
-                            </div>
-                        </div>
-                        <div class="data-item-time">${category.time}</div>
-                    </div>
-                `).join('');
-            }
-            
-            // Function to show website data in table
-            function showWebsiteData(website) {
-                const dataTableTitle = document.getElementById('dataTableTitle');
-                const dataTableContainer = document.getElementById('dataTableContainer');
-                
-                // Always show "Top Sites" title for website view
-                dataTableTitle.textContent = 'Top Sites';
-                
-                // Show all websites with their times and logos
-                const allWebsites = [
-                    { name: 'Youtube', time: '1h 23m 29s', icon: '🎥', domain: 'youtube.com' },
-                    { name: 'Chess', time: '0h 58m 4s', icon: '♟️', domain: 'chess.com' },
-                    { name: 'Facebook', time: '0h 37m 26s', icon: '📘', domain: 'facebook.com' },
-                    { name: '127', time: '0h 9m 42s', icon: '🔧', domain: '127.0.0.1' },
-                    { name: 'Dashboard', time: '0h 5m 29s', icon: '📊', domain: 'moekofcldmjpkbclhodabnpkdechojdb' },
-                    { name: 'Thetruesize', time: '0h 5m 7s', icon: '🌍', domain: 'thetruesize.com' },
-                    { name: 'Localhost', time: '0h 4m 23s', icon: '🖥️', domain: 'localhost' },
-                    { name: 'Dashboard', time: '0h 3m 19s', icon: '📊', domain: 'dashboard' }
-                ];
-                
-                dataTableContainer.innerHTML = allWebsites.map(site => `
-                    <div class="data-table-item">
-                        <div class="data-item-info">
-                            <div class="data-item-icon">${site.icon}</div>
-                            <div class="data-item-details">
-                                <h4>${site.name}</h4>
-                                <p>${site.domain}</p>
-                            </div>
-                        </div>
-                        <div class="data-item-time">${site.time}</div>
-                    </div>
-                `).join('');
-            }
-            
-            // Initialize with category chart
-            createCategoryChart();
-            
-            // Handle view switcher
-            const categoryViewBtn = document.getElementById('categoryViewBtn');
-            const websiteViewBtn = document.getElementById('websiteViewBtn');
-            
-            if (categoryViewBtn && websiteViewBtn) {
-                categoryViewBtn.addEventListener('click', () => {
-                    categoryViewBtn.classList.add('active');
-                    websiteViewBtn.classList.remove('active');
-                    createCategoryChart();
-                    showCategoryData(); // Always show category data for category view
-                });
-                
-                websiteViewBtn.addEventListener('click', () => {
-                    websiteViewBtn.classList.add('active');
-                    categoryViewBtn.classList.remove('active');
-                    createWebsiteChart();
-                    showWebsiteData(); // Always show website data for website view
-                });
-            }
-            
-            
-            // Dashboard button - redirect to overall view
-            const dashboardBtn = document.getElementById('dashboardBtn');
-            if (dashboardBtn) {
-                dashboardBtn.addEventListener('click', () => {
-                    window.location.href = 'overall-view.html';
-                });
-            }
-            
-            // Handle modals
-            const moreBtn = document.getElementById('moreBtn');
-            const moreModal = document.getElementById('moreModal');
-            const closeMoreBtn = document.getElementById('closeMoreBtn');
-            
-            if (moreBtn && moreModal) {
-                moreBtn.addEventListener('click', () => {
-                    moreModal.style.display = 'block';
-                });
-                
-                if (closeMoreBtn) {
-                    closeMoreBtn.addEventListener('click', () => {
-                        moreModal.style.display = 'none';
-                    });
-                }
-            }
-            
-            // Handle goals modal
-            const goalsBtn = document.getElementById('goalsBtn');
-            const goalsModal = document.getElementById('goalsModal');
-            const closeGoalsBtn = document.getElementById('closeGoalsBtn');
-            
-            if (goalsBtn && goalsModal) {
-                goalsBtn.addEventListener('click', () => {
-                    goalsModal.style.display = 'block';
-                });
-                
-                if (closeGoalsBtn) {
-                    closeGoalsBtn.addEventListener('click', () => {
-                        goalsModal.style.display = 'none';
-                    });
-                }
-            }
-            
-            // Handle settings modal
-            const settingsBtn = document.getElementById('settingsBtn');
-            const settingsModal = document.getElementById('settingsModal');
-            const closeSettingsBtn = document.getElementById('closeSettingsBtn');
-            
-            if (settingsBtn && settingsModal) {
-                settingsBtn.addEventListener('click', () => {
-                    settingsModal.style.display = 'block';
-                });
-                
-                if (closeSettingsBtn) {
-                    closeSettingsBtn.addEventListener('click', () => {
-                        settingsModal.style.display = 'none';
-                    });
-                }
-            }
-            
-            // Close modals when clicking outside
-            window.addEventListener('click', (event) => {
-                if (event.target.classList.contains('modal')) {
-                    event.target.style.display = 'none';
-                }
-            });
-            
-            // Flag selector functionality
-            const selectedFlag = document.getElementById('selectedFlag');
-            const flagDropdown = document.getElementById('flagDropdown');
-            const currentFlag = document.getElementById('currentFlag');
-            const flagOptions = document.querySelectorAll('.flag-option');
-            
-            if (selectedFlag && flagDropdown) {
-                // Toggle dropdown on click
-                selectedFlag.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    flagDropdown.classList.toggle('show');
-                });
-                
-                // Handle flag selection
-                flagOptions.forEach(option => {
-                    option.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        const flagCode = option.dataset.flag;
-                        const flagImg = option.querySelector('img');
-                        
-                        if (currentFlag && flagImg) {
-                            currentFlag.src = flagImg.src;
-                            currentFlag.alt = flagImg.alt;
-                        }
-                        
-                        flagDropdown.classList.remove('show');
-                    });
-                });
-                
-                // Close dropdown when clicking outside
-                document.addEventListener('click', () => {
-                    flagDropdown.classList.remove('show');
-                });
-            }
-        });
-    </script>
+    <script type="module" src="/src/main.ts"></script>
 </body>
-</html> 
+</html>
