@@ -1,8 +1,8 @@
 import { Chart, ChartConfiguration, ChartType as ChartJSType } from 'chart.js/auto';
-import type { ChartData } from '../types';
+import type { ChartData, ChartOptions, ChartDataset } from '@/types';
 
 /**
- * Enhanced chart manager with TypeScript support and animations
+ * Enhanced chart manager with comprehensive TypeScript support
  */
 export class ChartManager {
   private charts: Map<string, Chart> = new Map();
@@ -11,21 +11,45 @@ export class ChartManager {
     '#607D8B', '#795548', '#E91E63', '#00BCD4', '#8BC34A', '#FFC107'
   ];
 
+  private static readonly DEFAULT_CHART_OPTIONS: ChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    animation: {
+      duration: 1000,
+      easing: 'easeOutQuart'
+    },
+    plugins: {
+      legend: {
+        labels: {
+          color: '#ffffff',
+          font: {
+            size: 12,
+            family: 'Inter, sans-serif'
+          }
+        }
+      },
+      tooltip: {
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        titleColor: '#ffffff',
+        bodyColor: '#ffffff',
+        borderColor: 'rgba(255, 255, 255, 0.2)',
+        borderWidth: 1,
+        cornerRadius: 8
+      }
+    }
+  };
+
   /**
    * Create or update a doughnut chart
    */
   createDoughnutChart(
     canvasId: string, 
     data: ChartData, 
-    options: Partial<ChartConfiguration['options']> = {}
+    options: Partial<ChartOptions> = {}
   ): Chart | null {
-    const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
-    if (!canvas) {
-      console.error(`Canvas with id "${canvasId}" not found`);
-      return null;
-    }
+    const canvas = this.getCanvas(canvasId);
+    if (!canvas) return null;
 
-    // Destroy existing chart
     this.destroyChart(canvasId);
 
     const ctx = canvas.getContext('2d');
@@ -38,45 +62,23 @@ export class ChartManager {
         datasets: [{
           data: data.data,
           backgroundColor: data.colors.length > 0 ? data.colors : this.DEFAULT_COLORS,
-          borderColor: 'rgba(255, 255, 255, 0.1)',
+          borderColor: data.borderColors || 'rgba(255, 255, 255, 0.1)',
           borderWidth: 1,
           hoverBorderWidth: 2,
           hoverBorderColor: 'rgba(255, 255, 255, 0.3)'
         }]
       },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        animation: {
-          animateRotate: true,
-          animateScale: true,
-          duration: 1000,
-          easing: 'easeOutQuart'
-        },
+      options: this.mergeOptions({
+        ...this.DEFAULT_CHART_OPTIONS,
         plugins: {
+          ...this.DEFAULT_CHART_OPTIONS.plugins,
           legend: {
+            ...this.DEFAULT_CHART_OPTIONS.plugins?.legend,
             display: true,
-            position: 'right',
-            labels: {
-              color: '#ffffff',
-              boxWidth: 15,
-              padding: 20,
-              font: {
-                size: 12,
-                family: 'Inter, sans-serif'
-              },
-              usePointStyle: true,
-              pointStyle: 'circle'
-            }
+            position: 'right'
           },
           tooltip: {
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-            titleColor: '#ffffff',
-            bodyColor: '#ffffff',
-            borderColor: 'rgba(255, 255, 255, 0.2)',
-            borderWidth: 1,
-            cornerRadius: 8,
-            displayColors: true,
+            ...this.DEFAULT_CHART_OPTIONS.plugins?.tooltip,
             callbacks: {
               label: (context) => {
                 const label = context.label || '';
@@ -87,9 +89,8 @@ export class ChartManager {
               }
             }
           }
-        },
-        ...options
-      }
+        }
+      }, options)
     };
 
     const chart = new Chart(ctx, config);
@@ -103,19 +104,11 @@ export class ChartManager {
   createBarChart(
     canvasId: string,
     labels: string[],
-    datasets: Array<{
-      label: string;
-      data: number[];
-      backgroundColor?: string | string[];
-      borderColor?: string | string[];
-    }>,
-    options: Partial<ChartConfiguration['options']> = {}
+    datasets: ChartDataset[],
+    options: Partial<ChartOptions> = {}
   ): Chart | null {
-    const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
-    if (!canvas) {
-      console.error(`Canvas with id "${canvasId}" not found`);
-      return null;
-    }
+    const canvas = this.getCanvas(canvasId);
+    if (!canvas) return null;
 
     this.destroyChart(canvasId);
 
@@ -130,18 +123,13 @@ export class ChartManager {
           ...dataset,
           backgroundColor: dataset.backgroundColor || this.DEFAULT_COLORS[index % this.DEFAULT_COLORS.length],
           borderColor: dataset.borderColor || 'rgba(255, 255, 255, 0.1)',
-          borderWidth: 1,
+          borderWidth: dataset.borderWidth || 1,
           borderRadius: 4,
           borderSkipped: false
         }))
       },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        animation: {
-          duration: 1000,
-          easing: 'easeOutQuart'
-        },
+      options: this.mergeOptions({
+        ...this.DEFAULT_CHART_OPTIONS,
         scales: {
           x: {
             ticks: { 
@@ -167,27 +155,8 @@ export class ChartManager {
               borderColor: 'rgba(255, 255, 255, 0.2)'
             }
           }
-        },
-        plugins: {
-          legend: {
-            labels: {
-              color: '#ffffff',
-              font: {
-                family: 'Inter, sans-serif'
-              }
-            }
-          },
-          tooltip: {
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-            titleColor: '#ffffff',
-            bodyColor: '#ffffff',
-            borderColor: 'rgba(255, 255, 255, 0.2)',
-            borderWidth: 1,
-            cornerRadius: 8
-          }
-        },
-        ...options
-      }
+        }
+      }, options)
     };
 
     const chart = new Chart(ctx, config);
@@ -201,20 +170,11 @@ export class ChartManager {
   createLineChart(
     canvasId: string,
     labels: string[],
-    datasets: Array<{
-      label: string;
-      data: number[];
-      borderColor?: string;
-      backgroundColor?: string;
-      fill?: boolean;
-    }>,
-    options: Partial<ChartConfiguration['options']> = {}
+    datasets: ChartDataset[],
+    options: Partial<ChartOptions> = {}
   ): Chart | null {
-    const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
-    if (!canvas) {
-      console.error(`Canvas with id "${canvasId}" not found`);
-      return null;
-    }
+    const canvas = this.getCanvas(canvasId);
+    if (!canvas) return null;
 
     this.destroyChart(canvasId);
 
@@ -230,7 +190,7 @@ export class ChartManager {
           borderColor: dataset.borderColor || this.DEFAULT_COLORS[index % this.DEFAULT_COLORS.length],
           backgroundColor: dataset.backgroundColor || `${this.DEFAULT_COLORS[index % this.DEFAULT_COLORS.length]}20`,
           fill: dataset.fill !== undefined ? dataset.fill : false,
-          tension: 0.4,
+          tension: dataset.tension || 0.4,
           pointRadius: 4,
           pointHoverRadius: 6,
           pointBackgroundColor: dataset.borderColor || this.DEFAULT_COLORS[index % this.DEFAULT_COLORS.length],
@@ -238,13 +198,8 @@ export class ChartManager {
           pointBorderWidth: 2
         }))
       },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        animation: {
-          duration: 1000,
-          easing: 'easeOutQuart'
-        },
+      options: this.mergeOptions({
+        ...this.DEFAULT_CHART_OPTIONS,
         interaction: {
           intersect: false,
           mode: 'index'
@@ -274,27 +229,43 @@ export class ChartManager {
               borderColor: 'rgba(255, 255, 255, 0.2)'
             }
           }
-        },
-        plugins: {
-          legend: {
-            labels: {
-              color: '#ffffff',
-              font: {
-                family: 'Inter, sans-serif'
-              }
-            }
-          },
-          tooltip: {
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-            titleColor: '#ffffff',
-            bodyColor: '#ffffff',
-            borderColor: 'rgba(255, 255, 255, 0.2)',
-            borderWidth: 1,
-            cornerRadius: 8
-          }
-        },
-        ...options
-      }
+        }
+      }, options)
+    };
+
+    const chart = new Chart(ctx, config);
+    this.charts.set(canvasId, chart);
+    return chart;
+  }
+
+  /**
+   * Create a pie chart
+   */
+  createPieChart(
+    canvasId: string,
+    data: ChartData,
+    options: Partial<ChartOptions> = {}
+  ): Chart | null {
+    const canvas = this.getCanvas(canvasId);
+    if (!canvas) return null;
+
+    this.destroyChart(canvasId);
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+
+    const config: ChartConfiguration = {
+      type: 'pie',
+      data: {
+        labels: data.labels,
+        datasets: [{
+          data: data.data,
+          backgroundColor: data.colors.length > 0 ? data.colors : this.DEFAULT_COLORS,
+          borderColor: data.borderColors || 'rgba(255, 255, 255, 0.1)',
+          borderWidth: 1
+        }]
+      },
+      options: this.mergeOptions(this.DEFAULT_CHART_OPTIONS, options)
     };
 
     const chart = new Chart(ctx, config);
@@ -322,6 +293,57 @@ export class ChartManager {
     }
 
     chart.update('active');
+  }
+
+  /**
+   * Update chart options
+   */
+  updateChartOptions(canvasId: string, newOptions: Partial<ChartOptions>): void {
+    const chart = this.charts.get(canvasId);
+    if (!chart) return;
+
+    chart.options = this.mergeOptions(chart.options, newOptions);
+    chart.update();
+  }
+
+  /**
+   * Animate chart entrance
+   */
+  animateChart(canvasId: string, animationType: 'fadeIn' | 'slideUp' | 'scale' = 'fadeIn'): void {
+    const chart = this.charts.get(canvasId);
+    if (!chart) return;
+
+    const canvas = chart.canvas;
+    
+    switch (animationType) {
+      case 'fadeIn':
+        canvas.style.opacity = '0';
+        canvas.style.transition = 'opacity 0.5s ease-in-out';
+        setTimeout(() => {
+          canvas.style.opacity = '1';
+        }, 100);
+        break;
+      
+      case 'slideUp':
+        canvas.style.transform = 'translateY(20px)';
+        canvas.style.opacity = '0';
+        canvas.style.transition = 'transform 0.5s ease-out, opacity 0.5s ease-out';
+        setTimeout(() => {
+          canvas.style.transform = 'translateY(0)';
+          canvas.style.opacity = '1';
+        }, 100);
+        break;
+      
+      case 'scale':
+        canvas.style.transform = 'scale(0.8)';
+        canvas.style.opacity = '0';
+        canvas.style.transition = 'transform 0.5s ease-out, opacity 0.5s ease-out';
+        setTimeout(() => {
+          canvas.style.transform = 'scale(1)';
+          canvas.style.opacity = '1';
+        }, 100);
+        break;
+    }
   }
 
   /**
@@ -355,5 +377,59 @@ export class ChartManager {
    */
   resizeAllCharts(): void {
     this.charts.forEach(chart => chart.resize());
+  }
+
+  /**
+   * Export chart as image
+   */
+  exportChart(canvasId: string, format: 'png' | 'jpeg' = 'png'): string | null {
+    const chart = this.charts.get(canvasId);
+    if (!chart) return null;
+
+    return chart.toBase64Image(`image/${format}`, 1.0);
+  }
+
+  /**
+   * Get all chart IDs
+   */
+  getChartIds(): string[] {
+    return Array.from(this.charts.keys());
+  }
+
+  /**
+   * Check if chart exists
+   */
+  hasChart(canvasId: string): boolean {
+    return this.charts.has(canvasId);
+  }
+
+  /**
+   * Get canvas element
+   */
+  private getCanvas(canvasId: string): HTMLCanvasElement | null {
+    const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    if (!canvas) {
+      console.error(`Canvas with id "${canvasId}" not found`);
+      return null;
+    }
+    return canvas;
+  }
+
+  /**
+   * Merge chart options
+   */
+  private mergeOptions(defaultOptions: any, customOptions: any): any {
+    return {
+      ...defaultOptions,
+      ...customOptions,
+      plugins: {
+        ...defaultOptions.plugins,
+        ...customOptions.plugins
+      },
+      scales: {
+        ...defaultOptions.scales,
+        ...customOptions.scales
+      }
+    };
   }
 }

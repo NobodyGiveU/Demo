@@ -1,18 +1,23 @@
-import { ViewManager } from './components/ViewManager';
-import { NotificationUtils } from './utils/notificationUtils';
-import { AnimationUtils } from './utils/animationUtils';
-import type { ViewType } from './types';
+import { ViewManager } from '@/components/ViewManager';
+import { NotificationUtils } from '@/utils/notificationUtils';
+import { AnimationUtils } from '@/utils/animationUtils';
+import { StorageUtils } from '@/utils/storageUtils';
+import { TimeUtils } from '@/utils/timeUtils';
+import type { ViewType, AppError } from '@/types';
 
 /**
- * Main application entry point
+ * Main application class with comprehensive TypeScript support
  */
 class WebTimeWiseApp {
   private viewManager: ViewManager;
   private currentPage: ViewType;
+  private isInitialized: boolean = false;
+  private errorHandler: (error: AppError) => void;
 
   constructor() {
     this.viewManager = new ViewManager();
     this.currentPage = this.detectCurrentPage();
+    this.errorHandler = this.handleGlobalError.bind(this);
     this.init();
   }
 
@@ -35,8 +40,20 @@ class WebTimeWiseApp {
    */
   private async init(): Promise<void> {
     try {
+      // Setup global error handling
+      this.setupErrorHandling();
+
+      // Check browser compatibility
+      this.checkBrowserCompatibility();
+
+      // Initialize storage
+      await this.initializeStorage();
+
       // Set current view in view manager
       this.viewManager.setCurrentView(this.currentPage);
+
+      // Initialize view manager
+      await this.viewManager.initialize();
 
       // Initialize page-specific functionality
       await this.initializePage();
@@ -44,16 +61,170 @@ class WebTimeWiseApp {
       // Setup global event listeners
       this.setupGlobalListeners();
 
-      // Show welcome notification
+      // Initialize focus mode if on overall view
+      if (this.currentPage === 'overall') {
+        this.initializeFocusMode();
+      }
+
+      // Show welcome message
       this.showWelcomeMessage();
 
       // Animate page entrance
       this.animatePageEntrance();
 
-      console.log(`WebTimeWise initialized for ${this.currentPage} view`);
+      // Mark as initialized
+      this.isInitialized = true;
+
+      console.log(`WebTimeWise initialized successfully for ${this.currentPage} view`);
     } catch (error) {
       console.error('Failed to initialize WebTimeWise:', error);
-      NotificationUtils.error('Failed to initialize application');
+      this.handleInitializationError(error);
+    }
+  }
+
+  /**
+   * Setup global error handling
+   */
+  private setupErrorHandling(): void {
+    window.addEventListener('error', (event) => {
+      this.handleGlobalError({
+        name: 'JavaScriptError',
+        message: event.message,
+        code: 'JS_ERROR',
+        severity: 'medium'
+      } as AppError);
+    });
+
+    window.addEventListener('unhandledrejection', (event) => {
+      this.handleGlobalError({
+        name: 'UnhandledPromiseRejection',
+        message: event.reason?.message || 'Unhandled promise rejection',
+        code: 'PROMISE_ERROR',
+        severity: 'high'
+      } as AppError);
+    });
+  }
+
+  /**
+   * Handle global errors
+   */
+  private handleGlobalError(error: AppError): void {
+    console.error('Global error:', error);
+    
+    switch (error.severity) {
+      case 'high':
+        NotificationUtils.error(`Critical error: ${error.message}`);
+        break;
+      case 'medium':
+        NotificationUtils.warning(`Warning: ${error.message}`);
+        break;
+      case 'low':
+        NotificationUtils.info(`Info: ${error.message}`);
+        break;
+    }
+  }
+
+  /**
+   * Handle initialization errors
+   */
+  private handleInitializationError(error: any): void {
+    const fallbackMessage = 'Failed to initialize application. Please refresh the page.';
+    
+    NotificationUtils.error(fallbackMessage, 0); // Persistent error
+    
+    // Show fallback UI
+    document.body.innerHTML = `
+      <div style="
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        font-family: Inter, sans-serif;
+        text-align: center;
+        padding: 20px;
+      ">
+        <h1 style="font-size: 2rem; margin-bottom: 1rem;">⚠️ Initialization Error</h1>
+        <p style="font-size: 1.1rem; margin-bottom: 2rem; max-width: 500px;">
+          WebTimeWise failed to initialize properly. This might be due to browser compatibility issues or corrupted data.
+        </p>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+          <button onclick="location.reload()" style="
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+          ">Refresh Page</button>
+          <button onclick="localStorage.clear(); location.reload()" style="
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+          ">Clear Data & Refresh</button>
+        </div>
+      </div>
+    `;
+  }
+
+  /**
+   * Check browser compatibility
+   */
+  private checkBrowserCompatibility(): void {
+    const requiredFeatures = [
+      'localStorage',
+      'Promise',
+      'fetch',
+      'requestAnimationFrame',
+      'addEventListener'
+    ];
+
+    const missingFeatures = requiredFeatures.filter(feature => {
+      return !(feature in window);
+    });
+
+    if (missingFeatures.length > 0) {
+      throw new Error(`Browser missing required features: ${missingFeatures.join(', ')}`);
+    }
+
+    // Check for modern JavaScript features
+    try {
+      eval('const test = () => {}; const {a} = {a: 1};');
+    } catch (error) {
+      throw new Error('Browser does not support modern JavaScript features');
+    }
+  }
+
+  /**
+   * Initialize storage
+   */
+  private async initializeStorage(): Promise<void> {
+    if (!StorageUtils.isAvailable()) {
+      throw new Error('localStorage is not available');
+    }
+
+    // Check storage quota
+    const remainingQuota = StorageUtils.getRemainingQuota();
+    if (remainingQuota < 1024 * 100) { // Less than 100KB
+      NotificationUtils.warning('Storage space is running low');
+    }
+
+    // Initialize default settings if not present
+    if (!StorageUtils.hasItem('settings')) {
+      const defaultSettings = {
+        theme: 'dark',
+        language: 'en',
+        notifications: true,
+        autoRefresh: true
+      };
+      StorageUtils.setItem('settings', defaultSettings);
     }
   }
 
@@ -84,7 +255,6 @@ class WebTimeWiseApp {
    * Initialize overall view
    */
   private async initializeOverallView(): Promise<void> {
-    // Initialize charts
     const chartManager = this.viewManager.getChartManager();
     
     // Device usage chart
@@ -103,8 +273,10 @@ class WebTimeWiseApp {
     };
     chartManager.createDoughnutChart('categoryChart', categoryData);
 
-    // Initialize focus mode functionality
-    this.initializeFocusMode();
+    // Animate charts
+    await TimeUtils.sleep(100);
+    chartManager.animateChart('deviceChart', 'slideUp');
+    chartManager.animateChart('categoryChart', 'scale');
   }
 
   /**
@@ -120,6 +292,9 @@ class WebTimeWiseApp {
     };
     
     chartManager.createDoughnutChart('categoryChart', categoryData);
+    
+    await TimeUtils.sleep(100);
+    chartManager.animateChart('categoryChart', 'fadeIn');
   }
 
   /**
@@ -135,6 +310,9 @@ class WebTimeWiseApp {
     };
     
     chartManager.createDoughnutChart('mobileChart', mobileData);
+    
+    await TimeUtils.sleep(100);
+    chartManager.animateChart('mobileChart', 'scale');
   }
 
   /**
@@ -150,6 +328,9 @@ class WebTimeWiseApp {
     };
     
     chartManager.createDoughnutChart('laptopChart', laptopData);
+    
+    await TimeUtils.sleep(100);
+    chartManager.animateChart('laptopChart', 'slideUp');
   }
 
   /**
@@ -176,6 +357,11 @@ class WebTimeWiseApp {
       colors: ['#ff9800', '#2196f3', '#4caf50', '#9c27b0', '#ff5722']
     };
     chartManager.createDoughnutChart('categoryChart', categoryData);
+
+    // Animate charts
+    await TimeUtils.sleep(100);
+    chartManager.animateChart('dailyChart', 'slideUp');
+    chartManager.animateChart('categoryChart', 'scale');
   }
 
   /**
@@ -190,32 +376,35 @@ class WebTimeWiseApp {
     if (!focusToggle || !focusBlockList || !addFocusBtn || !focusSiteInput) return;
 
     // Load focus mode state
-    const isActive = localStorage.getItem('focusActive') === 'true';
+    const isActive = StorageUtils.getItem<boolean>('focusActive', false);
     focusToggle.checked = isActive;
 
     // Toggle focus mode
     focusToggle.addEventListener('change', () => {
       const active = focusToggle.checked;
-      localStorage.setItem('focusActive', active.toString());
+      StorageUtils.setItem('focusActive', active);
       
       NotificationUtils.info(
         active ? 'Focus mode activated' : 'Focus mode deactivated'
       );
+
+      // Log focus session
+      this.logFocusSession(active);
     });
 
     // Add site to block list
-    addFocusBtn.addEventListener('click', () => {
+    const addSiteHandler = () => {
       const site = focusSiteInput.value.trim();
       if (!site) return;
 
-      const cleanSite = site.replace(/^https?:\/\//, '').replace(/^www\./, '').toLowerCase();
+      const cleanSite = this.cleanDomainName(site);
       
       // Get current block list
-      const blockList = JSON.parse(localStorage.getItem('focusBlockList') || '[]');
+      const blockList = StorageUtils.getItem<string[]>('focusBlockList', []);
       
       if (!blockList.includes(cleanSite)) {
         blockList.push(cleanSite);
-        localStorage.setItem('focusBlockList', JSON.stringify(blockList));
+        StorageUtils.setItem('focusBlockList', blockList);
         this.renderFocusBlockList();
         focusSiteInput.value = '';
         
@@ -223,10 +412,56 @@ class WebTimeWiseApp {
       } else {
         NotificationUtils.warning('Site already in block list');
       }
+    };
+
+    addFocusBtn.addEventListener('click', addSiteHandler);
+    
+    // Enter key support
+    focusSiteInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        addSiteHandler();
+      }
     });
 
     // Initial render
     this.renderFocusBlockList();
+  }
+
+  /**
+   * Clean domain name
+   */
+  private cleanDomainName(input: string): string {
+    return input
+      .replace(/^https?:\/\//, '')
+      .replace(/^www\./, '')
+      .split('/')[0]
+      .toLowerCase();
+  }
+
+  /**
+   * Log focus session
+   */
+  private logFocusSession(isStarting: boolean): void {
+    const sessions = StorageUtils.getItem<any[]>('focusSessions', []);
+    
+    if (isStarting) {
+      sessions.push({
+        id: Date.now().toString(),
+        startTime: Date.now(),
+        endTime: null,
+        duration: 0,
+        completed: false
+      });
+    } else {
+      const lastSession = sessions[sessions.length - 1];
+      if (lastSession && !lastSession.endTime) {
+        lastSession.endTime = Date.now();
+        lastSession.duration = lastSession.endTime - lastSession.startTime;
+        lastSession.completed = true;
+      }
+    }
+    
+    StorageUtils.setItem('focusSessions', sessions);
   }
 
   /**
@@ -236,7 +471,7 @@ class WebTimeWiseApp {
     const container = document.getElementById('focusBlockedSitesList');
     if (!container) return;
 
-    const blockList = JSON.parse(localStorage.getItem('focusBlockList') || '[]');
+    const blockList = StorageUtils.getItem<string[]>('focusBlockList', []);
     
     if (blockList.length === 0) {
       container.innerHTML = '<div class="no-sites">No focus block sites added</div>';
@@ -246,7 +481,10 @@ class WebTimeWiseApp {
     container.innerHTML = blockList.map((site: string) => `
       <div class="blocked-site-item">
         <div class="site-info">
-          <img src="https://www.google.com/s2/favicons?domain=${site}&sz=32" alt="${site} logo" class="site-logo">
+          <img src="https://www.google.com/s2/favicons?domain=${site}&sz=32" 
+               alt="${site} logo" 
+               class="site-logo"
+               onerror="this.style.display='none'">
           <span class="site-name">${this.getCleanWebsiteName(site)}</span>
         </div>
         <button class="remove-focus-block-btn" data-site="${site}">❌</button>
@@ -262,15 +500,23 @@ class WebTimeWiseApp {
         }
       });
     });
+
+    // Animate list items
+    const items = container.querySelectorAll('.blocked-site-item');
+    AnimationUtils.staggeredAnimation(
+      Array.from(items) as HTMLElement[],
+      AnimationUtils.slideUp,
+      50
+    );
   }
 
   /**
    * Remove site from focus block list
    */
   private removeFocusBlockSite(site: string): void {
-    const blockList = JSON.parse(localStorage.getItem('focusBlockList') || '[]');
+    const blockList = StorageUtils.getItem<string[]>('focusBlockList', []);
     const updatedList = blockList.filter((s: string) => s !== site);
-    localStorage.setItem('focusBlockList', JSON.stringify(updatedList));
+    StorageUtils.setItem('focusBlockList', updatedList);
     this.renderFocusBlockList();
     
     NotificationUtils.info(`Removed ${site} from focus block list`);
@@ -296,13 +542,17 @@ class WebTimeWiseApp {
       if (target.classList.contains('close-btn')) {
         const modal = target.closest('.modal') as HTMLElement;
         if (modal) {
-          modal.style.display = 'none';
+          AnimationUtils.fadeOut(modal).then(() => {
+            modal.style.display = 'none';
+          });
         }
       }
       
       // Close modal when clicking outside
       if (target.classList.contains('modal')) {
-        target.style.display = 'none';
+        AnimationUtils.fadeOut(target).then(() => {
+          target.style.display = 'none';
+        });
       }
     });
 
@@ -311,13 +561,18 @@ class WebTimeWiseApp {
       if (event.key === 'Escape') {
         const openModal = document.querySelector('.modal[style*="block"]') as HTMLElement;
         if (openModal) {
-          openModal.style.display = 'none';
+          AnimationUtils.fadeOut(openModal).then(() => {
+            openModal.style.display = 'none';
+          });
         }
       }
     });
 
     // Demo popup functionality
     this.setupDemoPopup();
+
+    // Performance monitoring
+    this.setupPerformanceMonitoring();
   }
 
   /**
@@ -333,21 +588,55 @@ class WebTimeWiseApp {
     const hasSeenPopup = sessionStorage.getItem('webtimewise_hasSeenDemoPopup');
     if (!hasSeenPopup) {
       demoPopup.classList.remove('hidden');
+      AnimationUtils.fadeIn(demoPopup);
     }
 
     // Continue button
     continueBtn.addEventListener('click', () => {
-      demoPopup.classList.add('hidden');
+      AnimationUtils.fadeOut(demoPopup).then(() => {
+        demoPopup.classList.add('hidden');
+      });
       sessionStorage.setItem('webtimewise_hasSeenDemoPopup', 'true');
     });
 
     // Click outside to close
     demoPopup.addEventListener('click', (e) => {
       if (e.target === demoPopup) {
-        demoPopup.classList.add('hidden');
+        AnimationUtils.fadeOut(demoPopup).then(() => {
+          demoPopup.classList.add('hidden');
+        });
         sessionStorage.setItem('webtimewise_hasSeenDemoPopup', 'true');
       }
     });
+  }
+
+  /**
+   * Setup performance monitoring
+   */
+  private setupPerformanceMonitoring(): void {
+    // Monitor page load performance
+    window.addEventListener('load', () => {
+      const perfData = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+      const loadTime = perfData.loadEventEnd - perfData.loadEventStart;
+      
+      console.log(`Page load time: ${loadTime}ms`);
+      
+      if (loadTime > 3000) {
+        NotificationUtils.warning('Page loaded slowly. Consider refreshing if performance issues persist.');
+      }
+    });
+
+    // Monitor memory usage (if available)
+    if ('memory' in performance) {
+      setInterval(() => {
+        const memory = (performance as any).memory;
+        const usedMB = memory.usedJSHeapSize / 1024 / 1024;
+        
+        if (usedMB > 100) {
+          console.warn(`High memory usage: ${usedMB.toFixed(1)}MB`);
+        }
+      }, 30000);
+    }
   }
 
   /**
@@ -378,12 +667,60 @@ class WebTimeWiseApp {
       100
     );
   }
+
+  /**
+   * Get application instance
+   */
+  static getInstance(): WebTimeWiseApp | null {
+    return (window as any).webTimeWiseApp || null;
+  }
+
+  /**
+   * Destroy application instance
+   */
+  destroy(): void {
+    if (this.isInitialized) {
+      this.viewManager.destroy();
+      NotificationUtils.clearAll();
+      this.isInitialized = false;
+    }
+  }
+
+  /**
+   * Get current page
+   */
+  getCurrentPage(): ViewType {
+    return this.currentPage;
+  }
+
+  /**
+   * Get view manager
+   */
+  getViewManager(): ViewManager {
+    return this.viewManager;
+  }
+
+  /**
+   * Check if app is initialized
+   */
+  isAppInitialized(): boolean {
+    return this.isInitialized;
+  }
 }
 
 // Initialize app when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-  new WebTimeWiseApp();
+  const app = new WebTimeWiseApp();
+  (window as any).webTimeWiseApp = app;
 });
 
 // Export for global access
 (window as any).WebTimeWiseApp = WebTimeWiseApp;
+
+// Handle page unload
+window.addEventListener('beforeunload', () => {
+  const app = WebTimeWiseApp.getInstance();
+  if (app) {
+    app.destroy();
+  }
+});

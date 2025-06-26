@@ -1,17 +1,21 @@
 {
-  "name": "webtimewise-demo",
-  "version": "1.0.0",
-  "description": "WebTimeWise Digital Wellness Dashboard - TypeScript Demo",
+  "name": "webtimewise-typescript",
+  "version": "2.0.0",
+  "description": "WebTimeWise Digital Wellness Dashboard - Complete TypeScript Implementation",
   "main": "index.html",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "devDependencies": {
     "@types/chart.js": "^2.9.41",
-    "typescript": "^5.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.45.0",
+    "typescript": "^5.0.2",
     "vite": "^5.0.0"
   },
   "dependencies": {
