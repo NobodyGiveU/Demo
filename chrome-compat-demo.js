@@ -2,6 +2,39 @@
 (function() {
     'use strict';
     
+    // Migration function to handle old localStorage keys
+    function migrateLocalStorageKeys() {
+        const oldPrefix = 'webtimewise_';
+        const newPrefix = 'timesetu_';
+        
+        // Get all localStorage keys
+        const keys = Object.keys(localStorage);
+        
+        // Find keys that start with the old prefix
+        const oldKeys = keys.filter(key => key.startsWith(oldPrefix));
+        
+        // Migrate each old key to the new prefix
+        oldKeys.forEach(oldKey => {
+            const newKey = oldKey.replace(oldPrefix, newPrefix);
+            const value = localStorage.getItem(oldKey);
+            
+            // Only migrate if the new key doesn't already exist
+            if (!localStorage.getItem(newKey)) {
+                localStorage.setItem(newKey, value);
+            }
+            
+            // Remove the old key
+            localStorage.removeItem(oldKey);
+        });
+        
+        if (oldKeys.length > 0) {
+            console.log(`Migrated ${oldKeys.length} localStorage keys from ${oldPrefix} to ${newPrefix}`);
+        }
+    }
+
+    // Run migration on load
+    migrateLocalStorageKeys();
+    
     // Create chrome object if it doesn't exist
     if (typeof chrome === 'undefined') {
         window.chrome = {};
@@ -23,7 +56,7 @@
                 
                 if (Array.isArray(keys)) {
                     keys.forEach(key => {
-                        const data = localStorage.getItem(`webtimewise_${key}`);
+                        const data = localStorage.getItem(`timesetu_${key}`);
                         if (data) {
                             try {
                                 result[key] = JSON.parse(data);
@@ -34,7 +67,7 @@
                     });
                 } else if (typeof keys === 'object') {
                     Object.keys(keys).forEach(key => {
-                        const data = localStorage.getItem(`webtimewise_${key}`);
+                        const data = localStorage.getItem(`timesetu_${key}`);
                         if (data) {
                             try {
                                 result[key] = JSON.parse(data);
@@ -55,7 +88,7 @@
             
             set: function(data, callback) {
                 Object.keys(data).forEach(key => {
-                    localStorage.setItem(`webtimewise_${key}`, JSON.stringify(data[key]));
+                    localStorage.setItem(`timesetu_${key}`, JSON.stringify(data[key]));
                 });
                 
                 if (callback) {
@@ -70,7 +103,7 @@
                 }
                 
                 keys.forEach(key => {
-                    localStorage.removeItem(`webtimewise_${key}`);
+                    localStorage.removeItem(`timesetu_${key}`);
                 });
                 
                 if (callback) {
