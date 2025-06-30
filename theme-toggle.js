@@ -1,27 +1,32 @@
 // Ultra Simple Theme Toggle Script - External File
 // Universal Theme Toggle with Persistent Storage
-window.onload = function() {
-    console.log('Page loaded, setting up universal theme toggle...');
+
+function initializeThemeToggle() {
+    console.log('Initializing universal theme toggle...');
     
-    var button = document.getElementById('simpleThemeToggle');
+    // Try both possible IDs for the theme toggle button
+    var button = document.getElementById('theme-toggle') || document.getElementById('simpleThemeToggle');
     var icon = document.getElementById('themeIcon');
     var text = document.getElementById('themeText');
     var body = document.body;
     
     if (!button || !icon || !text) {
-        console.log('Theme toggle elements not found');
+        console.log('Theme toggle elements not found - button:', !!button, 'icon:', !!icon, 'text:', !!text);
+        // Try again after a short delay
+        setTimeout(initializeThemeToggle, 100);
         return;
     }
     
     console.log('Theme toggle elements found');
+    console.log('Button element:', button);
+    console.log('Icon element:', icon);
+    console.log('Text element:', text);
     
     var lightThemeStyles = null;
     
     // Check saved theme preference from localStorage
-    var savedTheme = null;
-    try {
-        savedTheme = localStorage.getItem('dashboardTheme');
-    } catch (e) {
+    var savedTheme = localStorage.getItem('dashboardTheme');
+    if (!savedTheme) {
         console.log('localStorage not available, using default theme');
         savedTheme = 'dark'; // Default to dark
     }
@@ -36,6 +41,11 @@ window.onload = function() {
         lightThemeStyles.id = 'lightThemeStyles';
         lightThemeStyles.innerHTML = `
             /* Complete Olive Green Light Mode Theme */
+            
+            /* Smooth transitions for theme changes */
+            * {
+                transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease !important;
+            }
             
             /* Core Background Colors - Olive Green Theme */
             body.light-theme {
@@ -225,17 +235,30 @@ window.onload = function() {
             }
             
             /* Theme Toggle Button Styling - Olive Green */
-            body.light-theme .simple-theme-toggle {
+            body.light-theme .simple-theme-toggle,
+            body.light-theme #theme-toggle,
+            body.light-theme #simpleThemeToggle {
                 background: #ecfccb !important; /* Very light olive green */
                 border: 2px solid #84cc16 !important; /* Olive green border */
                 color: #365314 !important; /* Dark olive green text */
                 box-shadow: 0 2px 4px rgba(132, 204, 22, 0.2) !important;
+                border-radius: 25px !important;
+                padding: 8px 16px !important;
+                font-size: 14px !important;
+                font-weight: 500 !important;
+                cursor: pointer !important;
+                display: flex !important;
+                align-items: center !important;
+                gap: 6px !important;
             }
             
-            body.light-theme .simple-theme-toggle:hover {
+            body.light-theme .simple-theme-toggle:hover,
+            body.light-theme #theme-toggle:hover,
+            body.light-theme #simpleThemeToggle:hover {
                 background: #d9f99d !important; /* Medium light olive green */
                 border-color: #65a30d !important;
                 box-shadow: 0 4px 6px rgba(132, 204, 22, 0.3) !important;
+                transform: translateY(-1px) !important;
             }
             
             /* Form Elements - Olive Green Theme */
@@ -412,28 +435,54 @@ window.onload = function() {
     }
     
     function applyTheme(lightMode) {
+        console.log('Applying theme:', lightMode ? 'light' : 'dark');
+        console.log('Current body className:', body.className);
+        
         if (lightMode) {
             // Apply light theme
             if (body.className.indexOf('light-theme') === -1) {
                 body.className += ' light-theme';
             }
             createLightThemeStyles();
-            icon.innerHTML = '☀️';
-            text.innerHTML = 'Light';
-            console.log('Applied light theme');
+            if (icon) icon.innerHTML = '☀️';
+            if (text) text.innerHTML = 'Light';
+            console.log('Applied light theme - body className now:', body.className);
             
             // Update chart text colors for light mode
             updateChartTextColors(true);
         } else {
             // Apply dark theme
-            body.className = body.className.replace('light-theme', '');
+            body.className = body.className.replace('light-theme', '').trim();
             removeLightThemeStyles();
-            icon.innerHTML = '🌙';
-            text.innerHTML = 'Dark';
-            console.log('Applied dark theme');
+            if (icon) icon.innerHTML = '🌙';
+            if (text) text.innerHTML = 'Dark';
+            console.log('Applied dark theme - body className now:', body.className);
             
             // Update chart text colors for dark mode
             updateChartTextColors(false);
+        }
+        
+        // Apply theme-specific button styling
+        if (lightMode) {
+            // Light theme button styling is handled in CSS above
+        } else {
+            // Dark theme button styling
+            var themeButtons = document.querySelectorAll('.simple-theme-toggle, #theme-toggle, #simpleThemeToggle');
+            for (var i = 0; i < themeButtons.length; i++) {
+                var btn = themeButtons[i];
+                btn.style.background = '#2d3748';
+                btn.style.border = '2px solid #4a5568';
+                btn.style.color = '#e2e8f0';
+                btn.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.3)';
+                btn.style.borderRadius = '25px';
+                btn.style.padding = '8px 16px';
+                btn.style.fontSize = '14px';
+                btn.style.fontWeight = '500';
+                btn.style.cursor = 'pointer';
+                btn.style.display = 'flex';
+                btn.style.alignItems = 'center';
+                btn.style.gap = '6px';
+            }
         }
         
         // Save theme preference to localStorage
@@ -441,7 +490,7 @@ window.onload = function() {
             localStorage.setItem('dashboardTheme', lightMode ? 'light' : 'dark');
             console.log('Theme preference saved:', lightMode ? 'light' : 'dark');
         } catch (e) {
-            console.log('Could not save theme preference to localStorage');
+            console.log('Could not save theme preference to localStorage:', e);
         }
     }
     
@@ -592,16 +641,150 @@ window.onload = function() {
     button.onclick = function() {
         console.log('Theme toggle clicked');
         
+        // Add loading state
+        var originalText = text.innerHTML;
+        if (text) text.innerHTML = '...';
+        button.style.opacity = '0.7';
+        
         // Toggle theme
         isLight = !isLight;
-        applyTheme(isLight);
         
-        // Visual feedback
-        button.style.transform = 'scale(0.95)';
+        // Apply theme with a slight delay for visual feedback
         setTimeout(function() {
-            button.style.transform = 'scale(1)';
-        }, 100);
+            applyTheme(isLight);
+            
+            // Reset button state
+            button.style.opacity = '1';
+            
+            // Visual feedback
+            button.style.transform = 'scale(0.95)';
+            setTimeout(function() {
+                button.style.transform = 'scale(1)';
+            }, 100);
+        }, 50);
+        
+        // Broadcast theme change to other tabs/windows
+        try {
+            localStorage.setItem('themeChangeTimestamp', Date.now().toString());
+            console.log('Theme change broadcasted to other tabs');
+        } catch (e) {
+            console.log('Could not broadcast theme change');
+        }
     };
     
+    // Listen for theme changes from other tabs/windows
+    try {
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'dashboardTheme') {
+                var newTheme = e.newValue;
+                console.log('Theme change detected from another tab:', newTheme);
+                isLight = newTheme === 'light';
+                applyTheme(isLight);
+            }
+        });
+        console.log('Cross-tab theme synchronization enabled');
+    } catch (e) {
+        console.log('Could not set up cross-tab theme sync');
+    }
+    
     console.log('Universal theme toggle is ready! Current theme:', isLight ? 'light' : 'dark');
-}; 
+}
+
+// Initialize theme toggle when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeThemeToggle);
+} else {
+    initializeThemeToggle();
+}
+
+// Also try on window load as fallback
+window.addEventListener('load', function() {
+    // Only initialize if not already done
+    var button = document.getElementById('theme-toggle') || document.getElementById('simpleThemeToggle');
+    if (button && !button.onclick) {
+        console.log('Fallback theme toggle initialization');
+        initializeThemeToggle();
+    }
+});
+
+// Theme Toggle Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('themeIcon');
+    const themeText = document.getElementById('themeText');
+    const body = document.body;
+
+    // Load saved theme or default to dark
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    setTheme(savedTheme);
+
+    // Theme toggle event listener
+    if (themeToggle) {
+        themeToggle.addEventListener('click', function() {
+            const currentTheme = body.classList.contains('light-theme') ? 'light' : 'dark';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            // Show notification
+            showNotification(`Switched to ${newTheme} mode`);
+        });
+    }
+
+    function setTheme(theme) {
+        if (theme === 'light') {
+            body.classList.add('light-theme');
+            if (themeIcon) themeIcon.textContent = '☀️';
+            if (themeText) themeText.textContent = 'Light';
+            
+            // Update CSS custom properties for light theme
+            document.documentElement.style.setProperty('--bg-gradient', 'linear-gradient(135deg, #f0f9ff 0%, #e0e7ff 50%, #f0f9ff 100%)');
+            document.documentElement.style.setProperty('--text-color', '#1f2937');
+            document.documentElement.style.setProperty('--card-bg', 'rgba(255, 255, 255, 0.8)');
+            document.documentElement.style.setProperty('--border-color', 'rgba(156, 163, 175, 0.3)');
+        } else {
+            body.classList.remove('light-theme');
+            if (themeIcon) themeIcon.textContent = '🌙';
+            if (themeText) themeText.textContent = 'Dark';
+            
+            // Reset to default dark theme
+            document.documentElement.style.removeProperty('--bg-gradient');
+            document.documentElement.style.removeProperty('--text-color');
+            document.documentElement.style.removeProperty('--card-bg');
+            document.documentElement.style.removeProperty('--border-color');
+        }
+    }
+
+    // Function to show notification (defined here if not available globally)
+    function showNotification(message) {
+        if (typeof window.showNotification === 'function') {
+            window.showNotification(message);
+        } else {
+            // Fallback notification
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 80px;
+                right: 20px;
+                background: linear-gradient(135deg, #4caf50, #45a049);
+                color: white;
+                padding: 15px 20px;
+                border-radius: 12px;
+                z-index: 10000;
+                box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+                animation: slideInNotification 0.4s ease;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                backdrop-filter: blur(10px);
+                font-weight: 500;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOutNotification 0.4s ease';
+                setTimeout(() => notification.remove(), 400);
+            }, 3000);
+        }
+    }
+}); 

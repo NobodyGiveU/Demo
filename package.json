@@ -1,21 +1,17 @@
 {
-  "name": "webtimewise-typescript",
-  "version": "2.0.0",
-  "description": "WebTimeWise Digital Wellness Dashboard - Complete TypeScript Implementation",
+  "name": "timesetu-demo",
+  "version": "1.0.0",
+  "description": "TimeSetu Demo Dashboard - TypeScript Edition",
   "main": "index.html",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "type-check": "tsc --noEmit",
-    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
+    "type-check": "tsc --noEmit"
   },
   "devDependencies": {
     "@types/chart.js": "^2.9.41",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
-    "eslint": "^8.45.0",
-    "typescript": "^5.0.2",
+    "typescript": "^5.0.0",
     "vite": "^5.0.0"
   },
   "dependencies": {

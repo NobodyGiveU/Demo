@@ -241,12 +241,6 @@ let currentScenario = 'productive';
 function loadDemoData(scenario) {
     currentScenario = scenario;
     
-    // Update active button
-    document.querySelectorAll('.demo-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    event.target.classList.add('active');
-    
     // Store demo data in localStorage
     const demoData = DEMO_SCENARIOS[scenario];
     localStorage.setItem('timesetu_timeData', JSON.stringify(demoData.timeData));
@@ -353,26 +347,270 @@ if (typeof chrome !== 'undefined' && chrome.storage) {
 document.addEventListener('DOMContentLoaded', () => {
     // Load default scenario
     loadDemoData('productive');
-    
-    // Add demo mode indicator
-    const demoIndicator = document.createElement('div');
-    demoIndicator.style.cssText = `
-        position: fixed;
-        top: 20px;
-        left: 20px;
-        background: rgba(255, 193, 7, 0.9);
-        color: #333;
-        padding: 8px 12px;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        z-index: 1000;
-        backdrop-filter: blur(10px);
-    `;
-    demoIndicator.textContent = '🎮 Demo Mode';
-    document.body.appendChild(demoIndicator);
 });
 
 // Export for use in other scripts
 window.DEMO_SCENARIOS = DEMO_SCENARIOS;
-window.loadDemoData = loadDemoData; 
+window.loadDemoData = loadDemoData;
+
+// Demo Data for TimeSetu Dashboard
+// This file contains all dummy data for the standalone demo
+
+const DEMO_DATA = {
+    // Browser View Data
+    browser: {
+        totalTime: "3h 38m",
+        todayTime: "3h 38m",
+        weekTime: "25h 26m",
+        categories: {
+            "Entertainment": { time: "1h 23m 29s", percentage: 38, color: "#FF6B6B" },
+            "Games": { time: "0h 58m 4s", percentage: 26, color: "#9C27B0" },
+            "Social Media": { time: "0h 39m 17s", percentage: 18, color: "#E4405F" },
+            "Other / Uncategorized": { time: "0h 37m 56s", percentage: 18, color: "#9E9E9E" }
+        },
+        topSites: [
+            { name: "YouTube", time: "1h 23m", category: "Entertainment", favicon: "📺" },
+            { name: "GitHub", time: "1h 12m", category: "Work & Productivity", favicon: "💻" },
+            { name: "Twitter", time: "58m", category: "Social Media", favicon: "🐦" },
+            { name: "Stack Overflow", time: "33m", category: "Work & Productivity", favicon: "📚" },
+            { name: "Reddit", time: "28m", category: "Entertainment", favicon: "🔗" },
+            { name: "LinkedIn", time: "19m", category: "Social Media", favicon: "💼" }
+        ],
+        apps: [
+            { name: "uBlock Origin", time: "5m", category: "Productivity", icon: "🔒" },
+            { name: "Grammarly", time: "4m", category: "Productivity", icon: "✍️" },
+            { name: "Honey", time: "3m", category: "Shopping", icon: "🛒" },
+            { name: "LastPass", time: "2m", category: "Security", icon: "🔑" }
+        ],
+        weeklyData: {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            productive: [3.2, 4.1, 3.8, 4.5, 3.9, 1.2, 2.1],
+            entertainment: [1.8, 1.5, 2.2, 1.9, 2.1, 3.5, 4.2],
+            social: [1.1, 0.8, 1.5, 1.2, 1.3, 2.8, 3.1]
+        }
+    },
+
+    // Mobile View Data
+    mobile: {
+        totalTime: "4h 23m",
+        todayTime: "4h 23m",
+        weekTime: "28h 45m",
+        pickups: 47,
+        avgSession: "5m 36s",
+        notifications: 23,
+        mostUsed: "Instagram",
+        apps: [
+            { name: "Instagram", time: "1h 23m", category: "Social Media", icon: "📷", logo: "https://logo.clearbit.com/instagram.com", percentage: 32 },
+            { name: "WhatsApp", time: "45m", category: "Messaging", icon: "💬", logo: "https://logo.clearbit.com/whatsapp.com", percentage: 17 },
+            { name: "Spotify", time: "38m", category: "Music", icon: "🎵", logo: "https://logo.clearbit.com/spotify.com", percentage: 15 },
+            { name: "YouTube", time: "32m", category: "Entertainment", icon: "📺", logo: "https://logo.clearbit.com/youtube.com", percentage: 12 },
+            { name: "Subway Surfers", time: "28m", category: "Games", icon: "🎮", logo: "https://logo.clearbit.com/kiloo.com", percentage: 11 },
+            { name: "Gmail", time: "17m", category: "Productivity", icon: "📧", logo: "https://logo.clearbit.com/gmail.com", percentage: 6 },
+            { name: "TikTok", time: "12m", category: "Social Media", icon: "🎬", logo: "https://logo.clearbit.com/tiktok.com", percentage: 5 },
+            { name: "Maps", time: "8m", category: "Navigation", icon: "🗺️", logo: "https://logo.clearbit.com/google.com", percentage: 2 }
+        ],
+        weeklyStats: {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            screenTime: [3.2, 4.1, 3.8, 4.5, 3.9, 6.2, 5.8],
+            pickups: [35, 42, 38, 45, 41, 58, 52]
+        },
+        topSites: [
+            { name: "YouTube", time: "58m", category: "Entertainment", favicon: "📺" },
+            { name: "Wikipedia", time: "35m", category: "Information", favicon: "📚" },
+            { name: "Reddit", time: "27m", category: "Social", favicon: "🔗" },
+            { name: "Instagram", time: "25m", category: "Social", favicon: "📸" },
+            { name: "X", time: "21m", category: "Social", favicon: "🐦" }
+        ]
+    },
+
+    // Laptop View Data
+    laptop: {
+        totalTime: "6h 45m",
+        todayTime: "6h 45m",
+        weekTime: "45h 20m",
+        activeTime: "5h 12m",
+        idleTime: "1h 33m",
+        batteryRemaining: "3h 45m",
+        dataUsed: "2.4GB",
+        applications: [
+            { name: "Visual Studio Code", time: "2h 15m", category: "Development", icon: "💻", logo: "https://logo.clearbit.com/code.visualstudio.com", percentage: 33 },
+            { name: "Google Chrome", time: "1h 45m", category: "Web Browser", icon: "🌐", logo: "https://logo.clearbit.com/google.com", percentage: 26 },
+            { name: "Microsoft Outlook", time: "45m", category: "Email", icon: "📧", logo: "https://logo.clearbit.com/outlook.com", percentage: 11 },
+            { name: "Microsoft Excel", time: "38m", category: "Productivity", icon: "📊", logo: "https://logo.clearbit.com/microsoft.com", percentage: 9 },
+            { name: "Spotify", time: "32m", category: "Music", icon: "🎵", logo: "https://logo.clearbit.com/spotify.com", percentage: 8 },
+            { name: "Slack", time: "25m", category: "Communication", icon: "💬", logo: "https://logo.clearbit.com/slack.com", percentage: 6 },
+            { name: "Figma", time: "18m", category: "Design", icon: "🎨", logo: "https://logo.clearbit.com/figma.com", percentage: 4 },
+            { name: "Terminal", time: "12m", category: "Development", icon: "⚡", logo: "https://logo.clearbit.com/apple.com", percentage: 3 }
+        ],
+        weeklyProductivity: {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            productive: [5.2, 6.1, 5.8, 6.5, 5.9, 2.2, 3.1],
+            idle: [1.8, 1.5, 2.2, 1.9, 2.1, 3.5, 2.8]
+        }
+    },
+
+    // Overall View Data
+    overall: {
+        totalTime: "12h 34m",
+        todayTime: "12h 34m",
+        weekTime: "87h 45m",
+        devices: {
+            laptop: { time: "6h 45m", percentage: 54, usage: "Work & Productivity" },
+            mobile: { time: "4h 23m", percentage: 35, usage: "Social & Apps" },
+            browser: { time: "1h 26m", percentage: 11, usage: "Web Browsing" }
+        },
+        focusScore: 87,
+        weeklyBreakdown: {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            laptop: [5.2, 6.1, 5.8, 6.5, 5.9, 2.2, 3.1],
+            mobile: [3.2, 4.1, 3.8, 4.5, 3.9, 6.2, 5.8],
+            browser: [1.1, 1.3, 1.2, 1.4, 1.1, 2.1, 1.8]
+        },
+        topSites: [
+            { name: "YouTube", time: "58m", category: "Entertainment", favicon: "📺" },
+            { name: "Wikipedia", time: "35m", category: "Information", favicon: "📚" },
+            { name: "Reddit", time: "27m", category: "Social", favicon: "🔗" },
+            { name: "Instagram", time: "25m", category: "Social", favicon: "📸" },
+            { name: "X", time: "21m", category: "Social", favicon: "🐦" }
+        ],
+        topApps: [
+            { name: "Instagram", time: "25m", category: "Social Media", icon: "📸" },
+            { name: "WhatsApp", time: "45m", category: "Messaging", icon: "💬" },
+            { name: "Spotify", time: "38m", category: "Music", icon: "🎵" },
+            { name: "YouTube", time: "32m", category: "Entertainment", icon: "📺" },
+            { name: "Subway Surfers", time: "28m", category: "Games", icon: "🎮" },
+            { name: "Gmail", time: "17m", category: "Productivity", icon: "📧" },
+            { name: "TikTok", time: "12m", category: "Social Media", icon: "🎬" },
+            { name: "Maps", time: "8m", category: "Navigation", icon: "🗺️" }
+        ]
+    },
+
+    // Share Stats Data
+    share: {
+        totalScreenTime: "8h 23m",
+        productiveTime: "5h 12m",
+        focusScore: 87,
+        goalsMet: "4/7",
+        weeklyHighlights: [
+            "Met productivity goals 5 out of 7 days",
+            "Reduced social media usage by 15%",
+            "Increased focused work time by 20%",
+            "Maintained good digital wellness balance"
+        ],
+        recentShares: [
+            { title: "Yesterday's Progress", platform: "Twitter", time: "2 hours ago" },
+            { title: "Weekly Summary", platform: "WhatsApp", time: "1 day ago" },
+            { title: "Focus Mode Achievement", platform: "Instagram", time: "3 days ago" }
+        ]
+    },
+
+    // Goals Data
+    goals: {
+        streak: 5,
+        totalGoals: 7,
+        metToday: 4,
+        categories: {
+            "Social Media": { goal: "2h", actual: "1h 45m", status: "good" },
+            "Work & Productivity": { goal: "4h", actual: "4h 20m", status: "complete" },
+            "Entertainment": { goal: "1h", actual: "1h 15m", status: "over" },
+            "Total Screen Time": { goal: "8h", actual: "6h 23m", status: "good" }
+        }
+    },
+
+    // Focus Mode Data
+    focusMode: {
+        isActive: false,
+        blockedSites: ["facebook.com", "twitter.com", "instagram.com", "youtube.com"],
+        sessionsToday: 3,
+        totalFocusTime: "2h 45m",
+        longestSession: "1h 15m"
+    },
+
+    // Settings Data
+    settings: {
+        categories: [
+            { name: "Social Media", color: "#E4405F", count: 12 },
+            { name: "Work & Productivity", color: "#4CAF50", count: 8 },
+            { name: "Entertainment", color: "#FF9800", count: 15 },
+            { name: "News & Information", color: "#2196F3", count: 6 },
+            { name: "Shopping", color: "#9C27B0", count: 4 },
+            { name: "Other", color: "#9E9E9E", count: 3 }
+        ]
+    }
+};
+
+// Helper functions for demo data
+const DemoDataHelper = {
+    // Get data for specific view
+    getBrowserData: () => DEMO_DATA.browser,
+    getMobileData: () => DEMO_DATA.mobile,
+    getLaptopData: () => DEMO_DATA.laptop,
+    getOverallData: () => DEMO_DATA.overall,
+    getShareData: () => DEMO_DATA.share,
+    
+    // Get chart data
+    getCategoryChartData: () => {
+        const categories = DEMO_DATA.browser.categories;
+        return {
+            labels: Object.keys(categories),
+            data: Object.values(categories).map(cat => cat.percentage),
+            colors: Object.values(categories).map(cat => cat.color)
+        };
+    },
+    
+    getMobileChartData: () => {
+        const apps = DEMO_DATA.mobile.apps.slice(0, 6);
+        return {
+            labels: apps.map(app => app.name),
+            data: apps.map(app => app.percentage),
+            colors: ['#E4405F', '#25D366', '#1DB954', '#FF0000', '#FF6B6B', '#EA4335']
+        };
+    },
+    
+    getLaptopChartData: () => {
+        const apps = DEMO_DATA.laptop.applications.slice(0, 6);
+        return {
+            labels: apps.map(app => app.name),
+            data: apps.map(app => app.percentage),
+            colors: ['#007ACC', '#4285F4', '#0078D4', '#217346', '#1DB954', '#4A154B']
+        };
+    },
+    
+    getOverallChartData: () => {
+        const devices = DEMO_DATA.overall.devices;
+        return {
+            labels: ['Laptop', 'Mobile', 'Browser'],
+            data: [devices.laptop.percentage, devices.mobile.percentage, devices.browser.percentage],
+            colors: ['#007ACC', '#E4405F', '#4285F4']
+        };
+    },
+    
+    // Get weekly chart data
+    getWeeklyChartData: () => {
+        return DEMO_DATA.browser.weeklyData;
+    },
+    
+    // Format time for display
+    formatTime: (minutes) => {
+        const hours = Math.floor(minutes / 60);
+        const mins = minutes % 60;
+        return hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
+    },
+    
+    // Generate random variation for live demo feel
+    addRandomVariation: (baseValue, variation = 0.1) => {
+        const randomFactor = 1 + (Math.random() - 0.5) * variation;
+        return Math.round(baseValue * randomFactor);
+    }
+};
+
+// Export for use in demo pages
+if (typeof window !== 'undefined') {
+    window.DEMO_DATA = DEMO_DATA;
+    window.DemoDataHelper = DemoDataHelper;
+}
+
+// For Node.js environments
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { DEMO_DATA, DemoDataHelper };
+} 
